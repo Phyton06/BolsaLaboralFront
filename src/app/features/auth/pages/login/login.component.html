@@ -1,0 +1,66 @@
+<div class="min-h-screen flex items-center justify-center bg-background p-4">
+  <div class="w-full max-w-md">
+    <!-- Card -->
+    <div class="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      <!-- Header -->
+      <div class="px-6 py-6 text-center border-b border-border">
+        <h1 class="text-2xl font-bold text-utc-primary">Bolsa Laboral</h1>
+        <p class="text-sm text-muted-foreground mt-1">Universidad Tecnol&oacute;gica de la Costa</p>
+        <p class="text-sm text-muted-foreground mt-1">Inicia sesi&oacute;n</p>
+      </div>
+
+      <!-- Form -->
+      <form (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Correo electr&oacute;nico</label>
+          <input
+            type="email"
+            [(ngModel)]="email"
+            name="email"
+            required
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="tu@email.com"
+          />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Contrase&ntilde;a</label>
+          <input
+            type="password"
+            [(ngModel)]="password"
+            name="password"
+            required
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Tu contrase&ntilde;a"
+          />
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="isLoading"
+          class="w-full h-10 px-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm font-medium transition-colors disabled:opacity-50"
+        >
+          <span *ngIf="!isLoading">Iniciar sesi&oacute;n</span>
+          <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+            <span class="animate-spin h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"></span>
+            Cargando...
+          </span>
+        </button>
+
+        <!-- Links -->
+        <div class="flex items-center justify-between text-sm pt-2">
+          <a routerLink="/register" class="text-primary hover:underline">Crear cuenta</a>
+          <a routerLink="/forgot-password" class="text-primary hover:underline">&iquest;Olvidaste tu contrase&ntilde;a?</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <p class="text-center text-xs text-muted-foreground mt-4">
+      Hackathon DITI 2026 &mdash; UTC
+    </p>
+  </div>
+</div>

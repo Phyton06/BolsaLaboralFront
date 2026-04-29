@@ -1,0 +1,76 @@
+<div class="min-h-screen flex items-center justify-center bg-background p-4">
+  <div class="w-full max-w-md">
+    <div class="rounded-xl border border-border bg-card shadow-sm overflow-hidden">
+      <div class="px-6 py-6 text-center border-b border-border">
+        <h1 class="text-2xl font-bold text-utc-primary">Bolsa Laboral</h1>
+        <p class="text-sm text-muted-foreground mt-1">Crear cuenta</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+        <!-- Nombre -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Nombre completo</label>
+          <input type="text" [(ngModel)]="nombre" name="nombre" required
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Tu nombre" />
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Correo electr&oacute;nico</label>
+          <input type="email" [(ngModel)]="email" name="email" required
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="tu@email.com" />
+        </div>
+
+        <!-- Tipo de cuenta -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Tipo de cuenta</label>
+          <select [(ngModel)]="tipo" name="tipo"
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary">
+            <option value="candidato">Candidato (busco empleo)</option>
+            <option value="empresa">Empresa (publico ofertas)</option>
+          </select>
+        </div>
+
+        <!-- Campos extra para empresa -->
+        <div *ngIf="tipo === 'empresa'">
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Nombre de la empresa</label>
+          <input type="text" [(ngModel)]="nombreEmpresa" name="nombreEmpresa"
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Mi Empresa S.A." />
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Contrase&ntilde;a</label>
+          <input type="password" [(ngModel)]="password" name="password" required
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="M&iacute;nimo 8 caracteres" />
+        </div>
+
+        <!-- Confirm Password -->
+        <div>
+          <label class="block text-sm font-medium text-muted-foreground mb-1">Confirmar contrase&ntilde;a</label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required
+            class="w-full h-10 px-3 rounded-lg border border-border bg-background text-foreground text-base focus:outline-none focus:ring-2 focus:ring-primary"
+            placeholder="Repite tu contrase&ntilde;a" />
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" [disabled]="isLoading"
+          class="w-full h-10 px-4 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 text-sm font-medium transition-colors disabled:opacity-50">
+          <span *ngIf="!isLoading">Registrarse</span>
+          <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+            <span class="animate-spin h-4 w-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full"></span>
+            Cargando...
+          </span>
+        </button>
+
+        <div class="text-center text-sm pt-2">
+          <a routerLink="/login" class="text-primary hover:underline">&iquest;Ya tienes cuenta? Inicia sesi&oacute;n</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

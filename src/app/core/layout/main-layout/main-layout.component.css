@@ -1,0 +1,4 @@
+/* Main layout styles */
+aside nav a.router-link-active {
+  @apply bg-primary/20 text-primary font-semibold;
+}

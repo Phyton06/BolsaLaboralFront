@@ -1,0 +1,50 @@
+/* Tailwind directives */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CSS Variables - Light Mode (Default) */
+:root {
+  --background: 245 245 245;
+  --foreground: 12 10 9;
+  --card: 255 255 255;
+  --card-foreground: 12 10 9;
+  --primary: 0 135 121;
+  --primary-foreground: 248 255 251;
+  --secondary: 0 55 56;
+  --secondary-foreground: 248 255 251;
+  --border: 229 231 235;
+  --muted-foreground: 107 114 128;
+  --accent: 243 244 246;
+  --accent-foreground: 12 10 9;
+}
+
+/* CSS Variables - Dark Mode */
+.dark {
+  --background: 12 10 9;
+  --foreground: 250 250 250;
+  --card: 24 24 27;
+  --card-foreground: 250 250 250;
+  --primary: 0 135 121;
+  --primary-foreground: 248 255 251;
+  --secondary: 40 158 146;
+  --secondary-foreground: 12 10 9;
+  --border: 55 65 81;
+  --muted-foreground: 156 163 175;
+  --accent: 39 39 42;
+  --accent-foreground: 250 250 250;
+}
+
+/* Global reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
