@@ -71,8 +71,9 @@ export class VacantesApiService {
     if (params?.ubicacion) queryParams.append('ubicacion', params.ubicacion);
     if (params?.division_id) queryParams.append('division_id', params.division_id.toString());
     if (params?.solo_convenio) queryParams.append('solo_convenio', 'true');
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    // Always request at least 20
+    queryParams.append('page', (params?.page || 1).toString());
+    queryParams.append('limit', (params?.limit || 50).toString());
 
     const url = `${this.apiUrl}/vacantes${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
 
@@ -129,6 +130,21 @@ export class VacantesApiService {
       catchError(err => {
         console.error('Error fetching vacantes externas:', err);
         return of({ vacantes: [], total: 0, pagina: 1, paginas: 0 });
+      })
+    );
+  }
+
+  // ─── GET /vacantes/filtros ────────────────────────────
+  // Obtiene opciones para filtros
+  getFiltros(): Observable<{ubicaciones: string[], modalidades: string[]}> {
+    return this.http.get<ApiEnvelope<{ubicaciones: string[], modalidades: string[]}>>(`${this.apiUrl}/vacantes/filtros`).pipe(
+      map(envelope => envelope.data),
+      catchError(err => {
+        console.error('Error fetching filtros:', err);
+        return of({
+          ubicaciones: ['Nayarit', 'Jalisco', 'Ciudad de México', 'Remoto'],
+          modalidades: ['Presencial', 'Remoto', 'Sin preferencia']
+        });
       })
     );
   }

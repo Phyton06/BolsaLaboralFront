@@ -14,43 +14,82 @@ import { VacantesService, VacanteDisplay } from './services/vacantes.service';
 })
 export class OfertasListComponent implements OnInit {
   
-  // Injección del servicio de vacantes
   vacantesService = inject(VacantesService);
   
-  // Alias para usar en el template
   jobsList = this.vacantesService.vacantes;
   cargando = this.vacantesService.cargando;
   error = this.vacantesService.error;
-
-  // Mapping de propiedades para el template
-  getJobList(): VacanteDisplay[] {
-    return this.jobsList();
-  }
-
-  locations = signal<string[]>(['Tepic', 'Bahía de Banderas', 'Compostela', 'Nayarit (todo)', 'Nacional', 'Remoto']);
-  selectedLocations = signal<string[]>([]);
-
-  areas = signal<string[]>(['Tecnologías de la Información', 'Ing. de Procesos', 'Administración', 'Mantenimiento Industrial', 'Turismo', 'Mecatrónica']);
-  selectedAreas = signal<string[]>([]);
-
+  
+  // Opciones de filtros
+  ubicaciones = this.vacantesService.ubicaciones;
+  modalidades = this.vacantesService.modalidades;
+  
+  // Filtros locales
+  selectedUbicacion = signal<string>('Nayarit');
+  selectedModalidad = signal<string>('Sin preferencia');
+  selectedSource = signal<'Convenio UT' | 'Externas' | 'both'>('both');
   minMatch = signal<number>(70);
-
-  sources = signal<{label:string, checked:boolean, source:'Convenio UT' | 'DENUE' | 'Externo'}[]>([
-    { label:'Convenio UT', checked:true, source:'Convenio UT' },
-    { label:'Externas', checked:true, source:'DENUE' },
-  ]);
-
+  
   viewMode = signal<'grid' | 'list'>('grid');
 
-  // Inicializar
   ngOnInit(): void {
+    this.vacantesService.cargarFiltrosYPerfil();
     this.vacantesService.cargarVacantes();
   }
 
-  filteredJobs = computed(() => {
-    // Los filtros ya se aplican en el servicio
-    return this.jobsList();
-  });
+  filteredJobs = computed(() => this.jobsList());
+
+  aplicarFiltros(): void {
+    const filtros: any = { minMatch: this.minMatch() };
+    
+    if (this.selectedUbicacion()) {
+      filtros.ubicacion = this.selectedUbicacion();
+    }
+    
+    if (this.selectedModalidad()) {
+      filtros.modalidad = this.selectedModalidad();
+    }
+    
+    if (this.selectedSource() === 'Convenio UT') {
+      filtros.incluirConvenio = true;
+      filtros.incluirDenue = false;
+    } else if (this.selectedSource() === 'Externas') {
+      filtros.incluirConvenio = false;
+      filtros.incluirDenue = true;
+    } else {
+      filtros.incluirConvenio = true;
+      filtros.incluirDenue = true;
+    }
+    
+    this.vacantesService.aplicarFiltros(filtros);
+  }
+
+  onUbicacionChange(ubicacion: string): void {
+    this.selectedUbicacion.set(ubicacion);
+    this.aplicarFiltros();
+  }
+
+  onModalidadChange(modalidad: string): void {
+    this.selectedModalidad.set(modalidad);
+    this.aplicarFiltros();
+  }
+
+  onSourceChange(source: 'Convenio UT' | 'Externas' | 'both'): void {
+    this.selectedSource.set(source);
+    this.aplicarFiltros();
+  }
+
+  clearFilters(): void {
+    this.selectedUbicacion.set('Nayarit');
+    this.selectedModalidad.set('Sin preferencia');
+    this.selectedSource.set('both');
+    this.minMatch.set(70);
+    this.vacantesService.limpiarFiltros();
+  }
+
+  recargar(): void {
+    this.vacantesService.cargarVacantes();
+  }
 
   getCompanyInitials(empresa: string | undefined): string {
     if (!empresa) return '??';
@@ -61,48 +100,5 @@ export class OfertasListComponent implements OnInit {
     if (match >= 85) return 'var(--ok-600)';
     if (match >= 75) return 'var(--brand-600)';
     return 'var(--gold-600)';
-  }
-
-  toggleLocation(loc: string): void {
-    this.selectedLocations.update(list =>
-      list.includes(loc) ? list.filter(l => l !== loc) : [...list, loc]
-    );
-  }
-
-  toggleArea(area: string): void {
-    this.selectedAreas.update(list =>
-      list.includes(area) ? list.filter(a => a !== area) : [...list, area]
-    );
-  }
-
-  toggleSource(index: number): void {
-    this.sources.update(sources => {
-      const newSources = sources.map((s, i) => 
-        i === index ? { ...s, checked: !s.checked } : s
-      );
-      // Actualizar filtros en el servicio
-      this.vacantesService.aplicarFiltros({
-        incluirConvenio: newSources[0].checked,
-        incluirDenue: newSources[1].checked
-      });
-      return newSources;
-    });
-  }
-
-  readonly user = { name: 'Juan Pérez', initials: 'JP' };
-
-  clearFilters(): void {
-    this.selectedLocations.set([]);
-    this.selectedAreas.set([]);
-    this.minMatch.set(70);
-    this.sources.set([
-      { label:'Convenio UT', checked:true, source:'Convenio UT' },
-      { label:'Externas', checked:true, source:'DENUE' },
-    ]);
-    this.vacantesService.limpiarFiltros();
-  }
-
-  recargar(): void {
-    this.vacantesService.cargarVacantes();
   }
 }
