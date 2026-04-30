@@ -1,74 +1,66 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { jwtDecode } from 'jwt-decode';
-
-interface JwtRole {
-  id: number;
-  nombre: string;
-}
+import { User } from '../../../features/auth/interfaces/User';
 
 interface AppJwtPayload {
   sub: number;
   usuario: string;
-  perfil_id: number;
-  cve_persona: number;
-  roles: JwtRole[];
+  rol: string;
+  primer_ingreso: boolean;
   iat: number;
   exp: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private tokenKey = 'token';
+  private userKey = 'user';
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem(this.tokenKey);
   }
 
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
-  }
-
-  private decodeToken(): AppJwtPayload | null {
-    const token = this.getToken();
-    if (!token) return null;
+  getUser(): User | null {
+    const userStr = localStorage.getItem(this.userKey);
+    if (!userStr) return null;
     try {
-      return jwtDecode<AppJwtPayload>(token);
+      return JSON.parse(userStr) as User;
     } catch {
       return null;
     }
   }
 
-  getRoles(): JwtRole[] {
-    return this.decodeToken()?.roles ?? [];
-  }
-
-  hasRole(roleName: string): boolean {
-    return this.getRoles().some(r => r.nombre === roleName);
-  }
-
-  hasAnyRole(roleNames: string[]): boolean {
-    return this.getRoles().some(r => roleNames.includes(r.nombre));
-  }
-
-  getUsuario() {
-    const decoded = this.decodeToken();
-    if (!decoded) return null;
-    return {
-      id: decoded.sub,
-      usuario: decoded.usuario,
-      perfil_id: decoded.perfil_id,
-      cve_persona: decoded.cve_persona
-    };
+  setSession(token: string, user: User): void {
+    localStorage.setItem(this.tokenKey, token);
+    localStorage.setItem(this.userKey, JSON.stringify(user));
   }
 
   isAuthenticated(): boolean {
-    const decoded = this.decodeToken();
-    if (!decoded) return false;
-    return decoded.exp * 1000 > Date.now();
+    const token = this.getToken();
+    if (!token) return false;
+    try {
+      const decoded = jwtDecode<AppJwtPayload>(token);
+      return decoded.exp * 1000 > Date.now();
+    } catch {
+      return false;
+    }
+  }
+
+  isFirstLogin(): boolean {
+    const user = this.getUser();
+    return user?.primer_ingreso ?? false;
+  }
+
+  hasRole(roleName: string): boolean {
+    const user = this.getUser();
+    return user?.rol === roleName;
+  }
+
+  hasAnyRole(roleNames: string[]): boolean {
+    const user = this.getUser();
+    return user ? roleNames.includes(user.rol) : false;
   }
 
   logout(): void {

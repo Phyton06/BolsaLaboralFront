@@ -1,0 +1,123 @@
+<div class="login-bg min-h-screen flex items-center justify-center p-4">
+  <div class="login-grid">
+    <!-- PANEL IZQUIERDO — Brand / Marketing -->
+    <div class="login-brand">
+      <!-- Logo marca de agua (fondo) -->
+      <img src="assets/img/logo-ut-mark-white.png" alt="" class="watermark" />
+
+      <!-- Header -->
+      <div class="brand-header">
+        <img src="assets/img/logo-ut-mark-white.png" alt="UT de la Costa" class="brand-logo" />
+        <div>
+          <div class="brand-title">Bolsa de Trabajo</div>
+          <div class="brand-subtitle">Universidad Tecnológica de la Costa</div>
+        </div>
+      </div>
+
+      <!-- Hero -->
+      <div class="brand-hero">
+        <h1 class="hero-title">
+          Talento medible.<br />
+          <span class="hero-accent">Vinculación efectiva.</span>
+        </h1>
+        <p class="hero-desc">
+          Únete a nuestra red de empresas con convenio. Accede a egresados capacitados y evalúa candidatos con datos cuantitativos.
+        </p>
+      </div>
+
+      <!-- Stats -->
+      <div class="brand-stats">
+        <div class="stat">
+          <div class="stat-value">1,432</div>
+          <div class="stat-label">egresados</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">87</div>
+          <div class="stat-label">convenios</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">284</div>
+          <div class="stat-label">vacantes</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL DERECHO — Formulario de convenio -->
+    <div class="login-form-panel">
+      <div class="form-inner">
+        <h2 class="form-title">Solicitar convenio</h2>
+        <p class="form-subtitle">Completa el formulario y el personal de la UT se pondrá en contacto contigo.</p>
+
+        <!-- Form -->
+        <form (ngSubmit)="onSubmit()" class="form-fields">
+          <div class="field">
+            <label for="nombreEmpresa">Nombre de la empresa *</label>
+            <input
+              id="nombreEmpresa"
+              type="text"
+              [ngModel]="nombreEmpresa()"
+              (ngModelChange)="nombreEmpresa.set($event)"
+              name="nombreEmpresa"
+              required
+              placeholder="Ej: Soluciones Pacífico S.A. de C.V."
+            />
+          </div>
+
+          <div class="field">
+            <label for="correo">Correo de contacto *</label>
+            <input
+              id="correo"
+              type="email"
+              [ngModel]="correo()"
+              (ngModelChange)="correo.set($event)"
+              name="correo"
+              required
+              placeholder="contacto@empresa.com"
+            />
+          </div>
+
+          <div class="field">
+            <label for="telefono">Teléfono *</label>
+            <input
+              id="telefono"
+              type="tel"
+              [ngModel]="telefono()"
+              (ngModelChange)="telefono.set($event)"
+              name="telefono"
+              required
+              placeholder="123-456-7890"
+            />
+          </div>
+
+          <div class="field">
+            <label for="representante">Nombre del representante *</label>
+            <input
+              id="representante"
+              type="text"
+              [ngModel]="representante()"
+              (ngModelChange)="representante.set($event)"
+              name="representante"
+              required
+              placeholder="Persona con quien la UT se contactará"
+            />
+          </div>
+
+          <button type="submit" [disabled]="isLoading()" class="btn-login">
+            @if (!isLoading()) {
+              <span>Enviar solicitud</span>
+            } @else {
+              <span class="btn-loading">
+                <span class="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full"></span>
+                Enviando...
+              </span>
+            }
+          </button>
+        </form>
+
+        <div class="form-footer">
+          ¿Ya tienes cuenta? <a routerLink="/login" class="footer-link">Inicia sesión</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

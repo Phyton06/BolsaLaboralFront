@@ -5,6 +5,32 @@
 
 /* CSS Variables - Light Mode (Default) */
 :root {
+  /* Brand — UT institutional green */
+  --brand-900: #0d3d1f;
+  --brand-800: #114d28;
+  --brand-700: #0f6b34;
+  --brand-600: #1a8a47;
+  --brand-500: #2da55c;
+  --brand-100: #d8eedc;
+  --brand-50:  #ecf6ee;
+
+  /* Neutrals */
+  --ink-900: #0b1220;
+  --ink-800: #131b2e;
+  --ink-700: #1e2940;
+  --ink-600: #34405a;
+  --ink-500: #5a657d;
+  --ink-400: #8a93a6;
+  --ink-300: #b9bfcc;
+  --ink-200: #dde0e7;
+  --ink-100: #eef0f4;
+  --ink-50:  #f6f7f9;
+  --paper:   #fbfaf7;
+
+  /* Accent */
+  --gold-600: #a06a1c;
+  --gold-500: #c98a2a;
+
   --background: 245 245 245;
   --foreground: 12 10 9;
   --card: 255 255 255;

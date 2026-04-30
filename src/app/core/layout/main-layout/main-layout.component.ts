@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../../core/services/auth/auth.service';
-import { AuthApiService } from '../../auth/services/auth-api.service';
+import { AuthApiService } from '../../../features/auth/services/auth-api.service';
 import { CommonModule as NgCommon } from '@angular/common';
 
 @Component({
@@ -26,8 +26,8 @@ export class MainLayoutComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const usuario = this.authService.getUsuario();
-    this.username = usuario?.usuario || null;
+    const user = this.authService.getUser();
+    this.username = user?.nombre || null;
     this.isCandidate = this.authService.hasRole('candidato');
     this.isEmpresa = this.authService.hasRole('empresa');
     this.isAdmin = this.authService.hasRole('admin');
@@ -38,7 +38,7 @@ export class MainLayoutComponent implements OnInit {
   }
 
   logout(): void {
-    this.authApiService.revokeToken().subscribe({
+    this.authApiService.logout().subscribe({
       next: () => this.doLogout(),
       error: () => this.doLogout()
     });
