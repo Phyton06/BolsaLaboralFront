@@ -1,5 +1,6 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:8080/api/v1',
-  frontendUrl: 'http://localhost:4200'
+  apiUrl: 'http://localhost:8080',
+  frontendUrl: 'http://localhost:4200',
+  geminiApiKey: '' // Agrega tu Gemini API Key aquí (ej: 'AIzaSy...')
 };

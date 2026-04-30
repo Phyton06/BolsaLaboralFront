@@ -20,6 +20,7 @@ export class LoginComponent {
   matricula = signal('');
   password = signal('');
   isLoading = signal(false);
+  showPassword = signal(false);
 
   // Auto-detección de rol por prefijo de matrícula
   detectedRole = computed<RoleType | null>(() => {
@@ -67,6 +68,10 @@ export class LoginComponent {
     private authService: AuthService,
     private router: Router
   ) {}
+
+  togglePassword(): void {
+    this.showPassword.update(v => !v);
+  }
 
   onSubmit(): void {
     if (!this.matricula().trim() || !this.password().trim()) {

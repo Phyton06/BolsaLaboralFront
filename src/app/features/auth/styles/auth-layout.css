@@ -106,7 +106,6 @@
 }
 
 .hero-title {
-  font-family: 'IBM Plex Serif', Georgia, serif;
   font-size: 28px;
   font-weight: 500;
   line-height: 1.3;
@@ -136,7 +135,6 @@
 }
 
 .stat-value {
-  font-family: 'IBM Plex Serif', Georgia, serif;
   font-size: 24px;
   font-weight: 600;
   color: var(--gold-500);
@@ -165,7 +163,6 @@
 }
 
 .form-title {
-  font-family: 'IBM Plex Serif', Georgia, serif;
   font-size: 26px;
   font-weight: 600;
   margin: 0;
@@ -293,6 +290,36 @@
 
 .forgot-link:hover {
   text-decoration: underline;
+}
+
+/* Password wrapper with toggle button */
+.password-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-wrapper input {
+  width: 100%;
+  padding-right: 40px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-400);
+  transition: color 0.15s;
+}
+
+.password-toggle:hover {
+  color: var(--ink-700);
 }
 
 /* Submit button */

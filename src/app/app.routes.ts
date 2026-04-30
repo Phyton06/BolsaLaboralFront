@@ -47,26 +47,25 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [authGuard],
     children: [
+      // Egresado routes
       {
         path: 'inicio',
         loadComponent: () =>
-          import('./features/inicio/pages/inicio/inicio.component')
+          import('./features/inicio/inicio.component')
             .then(m => m.InicioComponent)
       },
-      // Ofertas (público dentro de auth, también accesible sin login si se configura)
       {
         path: 'ofertas',
         loadComponent: () =>
-          import('./features/ofertas/pages/ofertas-list/ofertas-list.component')
+          import('./features/ofertas/ofertas-list.component')
             .then(m => m.OfertasListComponent)
       },
       {
         path: 'ofertas/:id',
         loadComponent: () =>
-          import('./features/ofertas/pages/ofertas-detail/ofertas-detail.component')
+          import('./features/ofertas/ofertas-detail.component')
             .then(m => m.OfertasDetailComponent)
       },
-      // Postulaciones (candidato)
       {
         path: 'mis-postulaciones',
         canActivate: [authGuard],
@@ -75,13 +74,87 @@ export const routes: Routes = [
           import('./features/mis-postulaciones/pages/mis-postulaciones.component')
             .then(m => m.MisPostulacionesComponent)
       },
-      // Perfil
+      {
+        path: 'evaluaciones',
+        loadComponent: () =>
+          import('./features/evaluaciones/evaluacion.component')
+            .then(m => m.EvaluacionComponent)
+      },
+      {
+        path: 'mi-radar',
+        loadComponent: () =>
+          import('./features/reporte/reporte.component')
+            .then(m => m.ReporteComponent)
+      },
       {
         path: 'mi-perfil',
         loadComponent: () =>
-          import('./features/mi-perfil/pages/mi-perfil.component')
+          import('./features/mi-perfil/mi-perfil.component')
             .then(m => m.MiPerfilComponent)
       },
+      {
+        path: 'guia',
+        loadComponent: () =>
+          import('./features/guia/guia.component')
+            .then(m => m.GuiaComponent)
+      },
+      {
+        path: 'mensajes',
+        loadComponent: () =>
+          import('./features/mensajes/mensajes.component')
+            .then(m => m.MensajesComponent)
+      },
+      {
+        path: 'config',
+        loadComponent: () =>
+          import('./features/config/config.component')
+            .then(m => m.ConfigComponent)
+      },
+
+      // Empresa routes
+      {
+        path: 'empresa/dashboard',
+        canActivate: [authGuard],
+        data: { roles: ['empresa'] },
+        loadComponent: () =>
+          import('./features/empresa/dashboard/dashboard.component')
+            .then(m => m.EmpresaDashboardComponent)
+      },
+      {
+        path: 'empresa/publicar',
+        canActivate: [authGuard],
+        data: { roles: ['empresa'] },
+        loadComponent: () =>
+          import('./features/empresa/publicar/publicar.component')
+            .then(m => m.EmpresaPublicarComponent)
+      },
+      {
+        path: 'empresa/candidatos',
+        canActivate: [authGuard],
+        data: { roles: ['empresa'] },
+        loadComponent: () =>
+          import('./features/empresa/candidatos/candidatos.component')
+            .then(m => m.EmpresaCandidatosComponent)
+      },
+
+      // Admin routes
+      {
+        path: 'admin/dashboard',
+        canActivate: [authGuard],
+        data: { roles: ['admin'] },
+        loadComponent: () =>
+          import('./features/admin/dashboard/dashboard.component')
+            .then(m => m.AdminDashboardComponent)
+      },
+      {
+        path: 'admin/insercion',
+        canActivate: [authGuard],
+        data: { roles: ['admin'] },
+        loadComponent: () =>
+          import('./features/admin/insercion/insercion.component')
+            .then(m => m.AdminInsercionComponent)
+      },
+
       // Onboarding
       {
         path: 'onboarding',
@@ -89,12 +162,7 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/auth/pages/onboarding/onboarding.component')
             .then(m => m.OnboardingComponent)
-      }
-      // TODO: Agregar rutas para empresa y admin
-      // { path: 'mis-ofertas', canActivate: [authGuard], data: { roles: ['empresa'] }, ... }
-      // { path: 'gestion-postulaciones/:ofertaId', canActivate: [authGuard], data: { roles: ['empresa'] }, ... }
-      // { path: 'admin/usuarios', canActivate: [authGuard], data: { roles: ['admin'] }, ... }
-      // { path: 'admin/estadisticas', canActivate: [authGuard], data: { roles: ['admin'] }, ... }
+      },
     ]
   },
 
