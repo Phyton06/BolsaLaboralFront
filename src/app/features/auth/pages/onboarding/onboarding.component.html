@@ -1,0 +1,68 @@
+<div class="min-h-screen flex items-center justify-center p-4 bg-[var(--ink-50)]">
+  <div class="w-full max-w-md">
+    <div class="rounded-xl border border-[var(--ink-200)] bg-white shadow-sm overflow-hidden">
+      <div class="px-6 py-6 text-center border-b border-[var(--ink-200)]">
+        <div class="mb-4 flex justify-center">
+          <img src="assets/img/logo-ut-mark.png" alt="UT de la Costa" class="h-10 w-auto" />
+        </div>
+        <h1 class="text-xl font-bold text-[var(--brand-700)]">Completa tu perfil</h1>
+        <p class="text-xs text-[var(--ink-500)] mt-0.5">Necesitamos algunos datos adicionales</p>
+      </div>
+
+      <form (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-[var(--ink-600)] mb-1">Teléfono *</label>
+          <input
+            type="tel"
+            [ngModel]="telefono()"
+            (ngModelChange)="telefono.set($event)"
+            name="telefono"
+            required
+            class="w-full h-10 px-3 rounded-lg border border-[var(--ink-200)] bg-white text-[var(--ink-800)] text-base focus:outline-none focus:ring-2 focus:ring-[var(--brand-700)] focus:border-transparent"
+            placeholder="123-456-7890"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-[var(--ink-600)] mb-1">Correo personal *</label>
+          <input
+            type="email"
+            [ngModel]="correoPersonal()"
+            (ngModelChange)="correoPersonal.set($event)"
+            name="correoPersonal"
+            required
+            class="w-full h-10 px-3 rounded-lg border border-[var(--ink-200)] bg-white text-[var(--ink-800)] text-base focus:outline-none focus:ring-2 focus:ring-[var(--brand-700)] focus:border-transparent"
+            placeholder="tu@email.com"
+          />
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-[var(--ink-600)] mb-1">LinkedIn</label>
+          <input
+            type="url"
+            [ngModel]="linkedin()"
+            (ngModelChange)="linkedin.set($event)"
+            name="linkedin"
+            class="w-full h-10 px-3 rounded-lg border border-[var(--ink-200)] bg-white text-[var(--ink-800)] text-base focus:outline-none focus:ring-2 focus:ring-[var(--brand-700)] focus:border-transparent"
+            placeholder="https://linkedin.com/in/tu-perfil"
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          class="w-full h-10 px-4 bg-[var(--brand-700)] text-white rounded-lg hover:bg-[var(--brand-800)] text-sm font-medium transition-colors disabled:opacity-50"
+        >
+          @if (!isLoading()) {
+            <span>Guardar y continuar</span>
+          } @else {
+            <span class="flex items-center justify-center gap-2">
+              <span class="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full"></span>
+              Guardando...
+            </span>
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

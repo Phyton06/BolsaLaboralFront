@@ -21,11 +21,11 @@ export const routes: Routes = [
         .then(m => m.LoginComponent)
   },
   {
-    path: 'register',
+    path: 'solicitar-convenio',
     canActivate: [loginGuard],
     loadComponent: () =>
-      import('./features/auth/pages/register/register.component')
-        .then(m => m.RegisterComponent)
+      import('./features/auth/pages/solicitar-convenio/solicitar-convenio.component')
+        .then(m => m.SolicitarConvenioComponent)
   },
   {
     path: 'forgot-password',
@@ -81,6 +81,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/mi-perfil/pages/mi-perfil.component')
             .then(m => m.MiPerfilComponent)
+      },
+      // Onboarding
+      {
+        path: 'onboarding',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/auth/pages/onboarding/onboarding.component')
+            .then(m => m.OnboardingComponent)
       }
       // TODO: Agregar rutas para empresa y admin
       // { path: 'mis-ofertas', canActivate: [authGuard], data: { roles: ['empresa'] }, ... }
