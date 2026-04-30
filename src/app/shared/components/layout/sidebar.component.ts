@@ -44,10 +44,16 @@ export class SidebarComponent {
       'Evaluaciones': '/evaluaciones',
       'Mis postulaciones': '/mis-postulaciones',
       'Mi perfil / CV': '/mi-perfil',
-      'Mi radar': '/mi-radar',
+      'Mi perfil': '/mi-perfil',
+      'Mi Radar': '/mi-radar',
       'Guía de pruebas': '/guia',
       'Mensajes': '/mensajes',
-      'Configuración': '/config'
+      'Configuración': '/config',
+      // Empresa routes
+      'Dashboard': '/empresa/dashboard',
+      'Mis Vacantes': '/empresa/dashboard',
+      'Candidatos': '/empresa/candidatos',
+      'Empresas': '/admin/empresas',
     };
     return routes[label] || '/inicio';
   }

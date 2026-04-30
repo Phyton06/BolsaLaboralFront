@@ -1,0 +1,109 @@
+<div class="card cv-preview">
+  <div class="card-h">
+    <app-icon [name]="'file'" [size]="18" />
+    <h3>Vista previa del CV</h3>
+    <div class="spacer"></div>
+    <button class="btn primary" (click)="onGeneratePdf()" [disabled]="generating() || !perfil()">
+      <app-icon [name]="'download'" [size]="14" />
+      Generar PDF
+    </button>
+  </div>
+  <hr class="divider" />
+
+  @if (perfil()) {
+    <div class="cv-content">
+      <!-- Header -->
+      <div class="cv-header">
+        <h2>{{ nombreCompleto() }}</h2>
+        @if (perfil()?.carrera) {
+          <p class="cv-career">{{ perfil()?.carrera }}</p>
+        }
+        @if (perfil()?.division) {
+          <p class="cv-division">{{ perfil()?.division }}</p>
+        }
+        <p class="cv-periodo">Egreso: {{ perfil()?.periodo_egreso }}</p>
+      </div>
+
+      <!-- Contact -->
+      @if (perfil()?.contacto) {
+        <div class="cv-contact">
+          @if (perfil()?.contacto?.telefono) {
+            <span>{{ perfil()?.contacto?.telefono }}</span>
+          }
+          @if (perfil()?.contacto?.correo_personal) {
+            <span>{{ perfil()?.contacto?.correo_personal }}</span>
+          }
+          @if (perfil()?.contacto?.linkedin) {
+            <span>{{ perfil()?.contacto?.linkedin }}</span>
+          }
+        </div>
+      }
+
+      <!-- Biography -->
+      @if (perfil()?.biografia_ia) {
+        <div class="cv-section">
+          <h4>Perfil Profesional</h4>
+          <p>{{ perfil()?.biografia_ia }}</p>
+        </div>
+      }
+
+      <!-- Skills -->
+      @if (perfil()?.habilidades) {
+        <div class="cv-section">
+          <h4>Habilidades</h4>
+          @if (perfil()?.habilidades?.tecnicas?.length) {
+            <div class="cv-skill-group">
+              <strong>Técnicas:</strong>
+              <div class="cv-chips">
+                @for (s of perfil()!.habilidades!.tecnicas; track s) {
+                  <app-chip color="brand">{{ s }}</app-chip>
+                }
+              </div>
+            </div>
+          }
+          @if (perfil()?.habilidades?.blandas?.length) {
+            <div class="cv-skill-group">
+              <strong>Blandas:</strong>
+              <div class="cv-chips">
+                @for (s of perfil()!.habilidades!.blandas; track s) {
+                  <app-chip color="ok">{{ s }}</app-chip>
+                }
+              </div>
+            </div>
+          }
+          @if (perfil()?.habilidades?.idiomas?.length) {
+            <div class="cv-skill-group">
+              <strong>Idiomas:</strong>
+              <div class="cv-chips">
+                @for (s of perfil()!.habilidades!.idiomas; track s) {
+                  <app-chip color="info">{{ s }}</app-chip>
+                }
+              </div>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Experience -->
+      @if (perfil()?.trayectoria?.length) {
+        <div class="cv-section">
+          <h4>Experiencia Laboral</h4>
+          @for (entry of perfil()!.trayectoria!; track entry.empresa + entry.fecha) {
+            <div class="cv-entry">
+              <div class="cv-entry-header">
+                <strong>{{ entry.empresa }}</strong>
+                <span class="cv-entry-fecha">{{ entry.fecha }}</span>
+              </div>
+              <span class="cv-entry-tipo">{{ entry.tipo }}</span>
+              @if (entry.descripcion) {
+                <p>{{ entry.descripcion }}</p>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-state">Cargando datos del perfil...</p>
+  }
+</div>

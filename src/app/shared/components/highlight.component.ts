@@ -1,6 +1,6 @@
 import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IconComponent } from '../icon/icon.component';
+import { IconComponent } from './icon/icon.component';
 
 @Component({
   selector: 'app-highlight',

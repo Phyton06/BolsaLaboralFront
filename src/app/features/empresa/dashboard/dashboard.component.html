@@ -1,0 +1,155 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">PANEL DE EMPRESA</div>
+    <h1>Panel de reclutamiento</h1>
+    <div class="desc">Visión general de tus procesos de selección activos</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn ghost" (click)="recargar()"><app-icon name="download" [size]="13" /> Recargar</button>
+  </div>
+</div>
+
+@if (cargando) {
+  <div class="loading-state">
+    @for (_ of [1,2,3,4]; track _) {
+      <div class="skeleton skeleton-stat"></div>
+    }
+  </div>
+} @else if (error) {
+  <div class="error-state">
+    <app-icon name="x" [size]="32" />
+    <h3>{{ error }}</h3>
+    <button class="btn primary" (click)="recargar()">Reintentar</button>
+  </div>
+} @else {
+  <!-- KPI Cards -->
+  <div class="stats-grid">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: var(--brand-100); color: var(--brand-700);">
+        <app-icon name="briefcase" [size]="20" />
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Vacantes activas</div>
+        <div class="kpi-value">{{ stats.vacantes_activas }}</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: var(--info-100); color: var(--info-600);">
+        <app-icon name="users" [size]="20" />
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Postulaciones recibidas</div>
+        <div class="kpi-value">{{ stats.total_postulantes }}</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: var(--warn-100); color: var(--warn-600);">
+        <app-icon name="clock" [size]="20" />
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Pendientes de revisar</div>
+        <div class="kpi-value">{{ stats.postulaciones_por_estatus.pendiente }}</div>
+      </div>
+    </div>
+
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background: var(--ok-100); color: var(--ok-600);">
+        <app-icon name="check" [size]="20" />
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Aceptados</div>
+        <div class="kpi-value">{{ stats.postulaciones_por_estatus.aceptada }}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Secondary KPIs row -->
+  <div class="secondary-kpis">
+    <div class="kpi-mini">
+      <span class="kpi-mini-label">Match promedio</span>
+      <span class="kpi-mini-value">{{ stats.promedio_match }}%</span>
+    </div>
+    <div class="kpi-mini">
+      <span class="kpi-mini-label">En revisión</span>
+      <span class="kpi-mini-value">{{ stats.postulaciones_por_estatus.revisada }}</span>
+    </div>
+    <div class="kpi-mini">
+      <span class="kpi-mini-label">Rechazados</span>
+      <span class="kpi-mini-value">{{ stats.postulaciones_por_estatus.rechazada }}</span>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  @if (barData.length > 0) {
+    <div class="charts-grid">
+      <div class="card">
+        <div class="card-h">
+          <h3>Postulaciones por vacante</h3>
+        </div>
+        <app-bar-chart [height]="170" [data]="barData"></app-bar-chart>
+      </div>
+
+      <div class="card">
+        <div class="card-h">
+          <h3>Embudo de selección</h3>
+        </div>
+        <app-funnel [stages]="funnelStages"></app-funnel>
+      </div>
+    </div>
+  }
+
+  <!-- Vacantes Table -->
+  <div class="card">
+    <div class="card-h">
+      <h3>Tus vacantes</h3>
+    </div>
+
+    @if (vacantes.length === 0) {
+      <div class="empty-vacantes">
+        <app-icon name="briefcase" [size]="32" />
+        <p>No tienes vacantes publicadas aún</p>
+      </div>
+    } @else {
+      <table class="t">
+        <thead>
+          <tr>
+            <th>Puesto</th>
+            <th>Ubicación</th>
+            <th>Publicada</th>
+            <th>Postulantes</th>
+            <th>Mejor match</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (v of vacantes; track v.id) {
+            <tr>
+              <td><b>{{ v.titulo }}</b></td>
+              <td>{{ v.ubicacion }}</td>
+              <td style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--ink-500);">{{ formatDate(v.fecha_pub) }}</td>
+              <td>{{ v.postulantes_count }}</td>
+              <td>
+                @if (v.postulantes_count > 0) {
+                  <span class="match-badge" [style.color]="v.mejor_match >= 80 ? 'var(--ok-600)' : v.mejor_match >= 60 ? 'var(--brand-700)' : 'var(--ink-500)'">
+                    {{ v.mejor_match }}%
+                  </span>
+                } @else {
+                  <span style="color:var(--ink-400);">—</span>
+                }
+              </td>
+              <td><span class="chip {{ getVacanteStatus(v).chipClass }}">{{ getVacanteStatus(v).label }}</span></td>
+              <td>
+                <button class="btn sm primary" (click)="verPostulantes(v.id)">
+                  <app-icon name="users" [size]="12" /> Ver postulantes
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+}

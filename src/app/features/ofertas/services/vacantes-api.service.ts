@@ -12,6 +12,7 @@ export interface Vacante {
   titulo: string;
   descripcion?: string;
   ubicacion: string;
+  modalidad?: string;
   division_destino?: string | null;
   perfil_idoneo?: any;
   analisis_gemini?: any;
@@ -142,10 +143,27 @@ export class VacantesApiService {
       catchError(err => {
         console.error('Error fetching filtros:', err);
         return of({
-          ubicaciones: ['Nayarit', 'Jalisco', 'Ciudad de México', 'Remoto'],
+          ubicaciones: [
+            'Nayarit', 'Aguascalientes', 'Baja California', 'Baja California Sur',
+            'Campeche', 'Chiapas', 'Chihuahua', 'Ciudad de México', 'Coahuila',
+            'Colima', 'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco',
+            'México', 'Michoacán', 'Morelos', 'Nuevo León', 'Oaxaca', 'Puebla',
+            'Querétaro', 'Quintana Roo', 'San Luis Potosí', 'Sinaloa', 'Sonora',
+            'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 'Zacatecas',
+            'Remoto', 'Sin preferencia'
+          ],
           modalidades: ['Presencial', 'Remoto', 'Sin preferencia']
         });
       })
+    );
+  }
+
+  // ─── POST /vacantes/:id/postular ───────────────────────
+  // Aplicar a una vacante (egresado autenticado)
+  postular(vacanteId: number): Observable<any> {
+    return this.http.post<ApiEnvelope<any>>(
+      `${this.apiUrl}/vacantes/${vacanteId}/postular`, 
+      {}
     );
   }
 
@@ -158,6 +176,7 @@ export class VacantesApiService {
       titulo: v.titulo,
       descripcion: v.descripcion || '',
       ubicacion: v.ubicacion,
+      modalidad: v.modalidad || 'Presencial',
       es_externa: v.es_externa || false,
       url_externa: v.url_externa || v.url || null,
       fecha_publicacion: v.fecha_publicacion,

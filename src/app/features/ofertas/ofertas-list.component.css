@@ -1,19 +1,5 @@
 :host {
   display: block;
-  height: 100vh;
-  overflow: hidden;
-}
-.shell {
-  display: flex;
-  height: 100%;
-  overflow: hidden;
-}
-.main {
-  flex: 1;
-  overflow--y: auto;
-  overflow-x: hidden;
-  padding: 24px;
-  background: var(--ink-50);
 }
 
 /* ---- Page Header ---- */
@@ -33,7 +19,6 @@
 .content-layout {
   display: flex;
   gap: 20px;
-  height: calc(100% - 110px);
 }
 
 /* ---- Filters Panel ---- */
@@ -128,8 +113,8 @@
   font-weight: 700; font-size: 13px; flex-shrink: 0;
 }
 .job-info { flex: 1; min-width: 0; }
-.job-title { font-size: 13.5px; font-weight: 700; color: var(--ink-800); margin-bottom: 2px; }
-.job-company { font-size: 12px; color: var(--ink-600); }
+.job-title { font-size: 13.5px; font-weight: 700; color: var(--ink-800); margin-bottom: 2px; word-break: break-word; line-height: 1.35; }
+.job-company { font-size: 12px; color: var(--ink-600); word-break: break-word; }
 .job-loc {
   font-size: 11px; color: var(--ink-400);
   display: flex; align-items: center; gap: 3px; margin-top: 2px;
@@ -198,3 +183,17 @@
 /* ---- Badges ---- */
 .badge-ut { background: var(--gold-100); color: var(--gold-700); padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; }
 .badge-ext { background: var(--ink-100); color: var(--ink-600); padding: 2px 7px; border-radius: 4px; font-size: 10.5px; font-weight: 600; }
+
+/* ---- Applied Button ---- */
+.btn.applied {
+  background: var(--ink-100);
+  border-color: var(--ink-200);
+  color: var(--ink-400);
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.btn.applied:hover {
+  background: var(--ink-100);
+  border-color: var(--ink-200);
+  color: var(--ink-400);
+}

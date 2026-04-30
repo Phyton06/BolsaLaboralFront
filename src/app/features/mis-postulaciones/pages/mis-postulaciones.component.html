@@ -1,0 +1,134 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">MIS POSTULACIONES · SEGUIMIENTO</div>
+    <h1>Estado de tus postulaciones</h1>
+    <div class="desc">Revisa el avance de cada aplicación que has enviado</div>
+  </div>
+</div>
+
+@if (cargando) {
+  <div class="loading-state">
+    @for (_ of [1,2,3,4,5]; track _) {
+      <div class="skeleton-card">
+        <div class="skeleton skeleton-avatar"></div>
+        <div class="skeleton-content">
+          <div class="skeleton skeleton-title"></div>
+          <div class="skeleton skeleton-line"></div>
+          <div class="skeleton skeleton-line" style="width: 40%"></div>
+        </div>
+      </div>
+    }
+  </div>
+} @else if (error) {
+  <div class="error-state">
+    <app-icon name="x" [size]="32" />
+    <h3>{{ error }}</h3>
+    <button class="btn primary" (click)="recargar()">Reintentar</button>
+  </div>
+} @else if (postulaciones.length === 0) {
+  <div class="empty-state">
+    <app-icon name="briefcase" [size]="48" />
+    <h3>Aún no te has postulado</h3>
+    <p>Explora las vacantes disponibles y comienza a aplicar</p>
+    <a routerLink="/ofertas" class="btn primary">Ver vacantes</a>
+  </div>
+} @else {
+  <div class="content-layout">
+    <div class="results-header">
+      <div class="results-count">
+        <b>{{ postulaciones.length }} postulaciones</b>
+      </div>
+      <div class="view-toggle">
+        <button [class.active]="viewMode === 'grid'" (click)="viewMode = 'grid'">
+          <app-icon name="grid" [size]="12" /> Grid
+        </button>
+        <button [class.active]="viewMode === 'list'" (click)="viewMode = 'list'">
+          <app-icon name="list" [size]="12" /> Lista
+        </button>
+      </div>
+    </div>
+
+    @if (viewMode === 'grid') {
+      <div class="postulaciones-grid">
+        @for (p of postulaciones; track p.id_postulacion) {
+          <div class="post-card">
+            <div class="post-card-top">
+              <div class="company-avatar">{{ getCompanyInitials(p.empresa) }}</div>
+              <div class="post-info">
+                <div class="post-title">{{ p.vacante_titulo }}</div>
+                <div class="post-company">{{ p.empresa }}</div>
+              </div>
+              <div class="post-match">{{ p.match }}%</div>
+            </div>
+
+            <div class="post-meta">
+              <span class="post-date">
+                <app-icon name="clock" [size]="11" />
+                {{ formatDate(p.fecha) }}
+              </span>
+              <span class="chip {{ getStatusConfig(p.estatus).chipClass }}">
+                {{ getStatusConfig(p.estatus).label }}
+              </span>
+            </div>
+
+            <div class="post-actions">
+              <button class="btn sm" (click)="verVacante(p)">
+                <app-icon name="eye" [size]="12" /> Ver vacante
+              </button>
+              @if (p.estatus === 'pendiente') {
+                <button class="btn sm ghost danger" (click)="cancelar(p)">
+                  <app-icon name="x" [size]="12" /> Cancelar
+                </button>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    }
+
+    @if (viewMode === 'list') {
+      <div class="postulaciones-list">
+        <table class="t">
+          <thead>
+            <tr>
+              <th>Empresa</th>
+              <th>Puesto</th>
+              <th>Match</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of postulaciones; track p.id_postulacion) {
+              <tr>
+                <td>
+                  <div class="table-company">
+                    <div class="table-avatar">{{ getCompanyInitials(p.empresa) }}</div>
+                    {{ p.empresa }}
+                  </div>
+                </td>
+                <td class="table-title">{{ p.vacante_titulo }}</td>
+                <td><span class="match-badge">{{ p.match }}%</span></td>
+                <td class="table-date">{{ formatDate(p.fecha) }}</td>
+                <td>
+                  <span class="chip {{ getStatusConfig(p.estatus).chipClass }}">
+                    {{ getStatusConfig(p.estatus).label }}
+                  </span>
+                </td>
+                <td>
+                  <div class="table-actions">
+                    <button class="btn sm" (click)="verVacante(p)"><app-icon name="eye" [size]="12" /></button>
+                    @if (p.estatus === 'pendiente') {
+                      <button class="btn sm ghost danger" (click)="cancelar(p)"><app-icon name="x" [size]="12" /></button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}

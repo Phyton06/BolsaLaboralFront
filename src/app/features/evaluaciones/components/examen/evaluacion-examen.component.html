@@ -1,0 +1,134 @@
+<!-- IA Loading Animation (solo para técnica) -->
+@if (iaLoading()) {
+  <div class="ia-overlay">
+    <div class="ia-content">
+      <div class="ia-spinner"></div>
+      <h2>Preparando tu evaluación</h2>
+
+      @if (iaPhase() === 'analyzing') {
+        <p class="ia-message">Analizando tendencias del mercado laboral...</p>
+        <div class="ia-progress">
+          <div class="ia-bar" style="width: 33%"></div>
+        </div>
+      }
+
+      @if (iaPhase() === 'generating') {
+        <p class="ia-message">Generando preguntas personalizadas para tu perfil...</p>
+        <div class="ia-progress">
+          <div class="ia-bar" style="width: 66%"></div>
+        </div>
+      }
+
+      @if (iaPhase() === 'selecting') {
+        <p class="ia-message">Seleccionando las mejores preguntas...</p>
+        <div class="ia-progress">
+          <div class="ia-bar" style="width: 100%"></div>
+        </div>
+      }
+
+      <p class="ia-sub">Esto tomará solo unos segundos</p>
+    </div>
+  </div>
+}
+
+<!-- Loading state -->
+@if (loading() && !iaLoading()) {
+  <div class="loading-state">
+    <div class="placeholder" style="height: 60px; width: 100%;"></div>
+    <div class="placeholder" style="height: 300px; width: 100%;"></div>
+  </div>
+} @else if (error()) {
+  <div class="error-banner">
+    <app-icon [name]="'x'" [size]="18" />
+    <span>{{ error() }}</span>
+    <button class="btn sm primary" (click)="router.navigate(['/evaluaciones'])">Volver</button>
+  </div>
+} @else if (examen()) {
+  <!-- Exam Header -->
+  <div class="exam-header">
+    <div class="exam-title">
+      <div class="exam-type-label" [style.color]="meta().color">
+        EVALUACIÓN {{ meta().etiqueta | uppercase }}
+      </div>
+      <div class="exam-name">{{ meta().etiqueta }}</div>
+    </div>
+
+    <div class="exam-progress">
+      <div class="progress-info">
+        <span>Pregunta {{ currentIndex() + 1 }} de {{ examen()!.preguntas.length }}</span>
+        <span class="respondidas">{{ respondidas() }}/{{ examen()!.preguntas.length }} respondidas</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="progreso()"></div>
+      </div>
+    </div>
+
+    <div class="exam-timer" [class.timer-low]="tiempoBajo()">
+      <app-icon [name]="'clock'" [size]="16" />
+      <span>{{ tiempoRestante() }}</span>
+    </div>
+
+    <button class="btn ghost sm" (click)="finalizarExamen()">
+      Finalizar
+    </button>
+  </div>
+
+  <!-- Exam Body -->
+  <div class="exam-body">
+    @if (preguntaActual()) {
+      <div class="question-section">
+        <span class="section-label">PREGUNTA {{ currentIndex() + 1 }}</span>
+      </div>
+
+      <h2 class="question-text">{{ preguntaActual()!.pregunta }}</h2>
+
+      <div class="options-list">
+        @for (letra of getOpcionesLetras(preguntaActual()!.opciones); track letra) {
+          <div
+            class="option-item"
+            [class.selected]="opcionSeleccionada(letra)"
+            (click)="seleccionarOpcion(letra)"
+          >
+            <div class="option-letter" [class.selected]="opcionSeleccionada(letra)">
+              {{ letra }}
+            </div>
+            <span class="option-text">{{ preguntaActual()!.opciones[letra] }}</span>
+            @if (opcionSeleccionada(letra)) {
+              <app-icon name="check" [size]="16" color="var(--brand-700)" [stroke]="2.5" class="option-check" />
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Exam Footer -->
+      <div class="exam-footer">
+        <button class="btn ghost" (click)="anterior()" [disabled]="currentIndex() === 0">
+          <app-icon name="chevR" [size]="14" style="transform: rotate(180deg);" />
+          Anterior
+        </button>
+
+        <div class="footer-actions">
+          <button
+            class="btn ghost sm"
+            [class.marcar-active]="estaMarcada()"
+            (click)="toggleMarcada()"
+          >
+            Marcar para revisar
+          </button>
+
+          @if (!esUltima()) {
+            <button class="btn primary" (click)="siguiente()">
+              Siguiente
+              <app-icon name="chevR" [size]="14" />
+            </button>
+          } @else {
+            <button class="btn primary" (click)="finalizarExamen()">
+              Finalizar examen
+              <app-icon name="check" [size]="14" />
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+}

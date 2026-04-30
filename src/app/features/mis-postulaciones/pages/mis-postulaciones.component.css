@@ -1,1 +1,198 @@
-/* Mis postulaciones styles */
+:host {
+  display: block;
+}
+
+/* ---- Page Header ---- */
+.page-head { margin-bottom: 24px; }
+.crumbs {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-400);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.page-head h1 { font-size: 22px; font-weight: 700; color: var(--ink-800); margin: 0 0 4px; }
+.desc { font-size: 12.5px; color: var(--ink-500); margin: 0; }
+
+/* ---- Content Layout ---- */
+.content-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ---- Results Header ---- */
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.results-count { font-size: 12.5px; color: var(--ink-500); }
+
+.view-toggle { display: flex; gap: 4px; }
+.view-toggle button {
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  font-size: 11px;
+  color: var(--ink-600);
+  transition: background .15s, border-color .15s;
+}
+.view-toggle button.active { background: var(--brand-50); border-color: var(--brand-300); color: var(--brand-700); }
+
+/* ---- Grid View ---- */
+.postulaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 14px;
+}
+
+/* ---- Post Card ---- */
+.post-card {
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  padding: 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.post-card:hover { border-color: var(--brand-300); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+.post-card-top { display: flex; gap: 10px; align-items: flex-start; }
+.company-avatar {
+  width: 38px; height: 38px; border-radius: 6px;
+  background: var(--brand-100); color: var(--brand-700);
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 13px; flex-shrink: 0;
+}
+.post-info { flex: 1; min-width: 0; }
+.post-title { font-size: 13.5px; font-weight: 700; color: var(--ink-800); margin-bottom: 2px; word-break: break-word; line-height: 1.35; }
+.post-company { font-size: 12px; color: var(--ink-600); word-break: break-word; }
+.post-match {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 18px; font-weight: 700; flex-shrink: 0;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid var(--ink-100);
+}
+.post-date {
+  font-size: 11px; color: var(--ink-400);
+  display: flex; align-items: center; gap: 3px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+/* ---- List View ---- */
+.postulaciones-list {
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.table-company {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.table-avatar {
+  width: 28px; height: 28px; border-radius: 5px;
+  background: var(--brand-100); color: var(--brand-700);
+  display: grid; place-items: center;
+  font-weight: 700; font-size: 10px; flex-shrink: 0;
+}
+.table-title { font-weight: 600; }
+.table-date { color: var(--ink-400); font-size: 11px; }
+
+.match-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 600;
+  font-size: 12px;
+  color: var(--brand-700);
+}
+
+.table-actions {
+  display: flex;
+  gap: 4px;
+}
+
+/* ---- Buttons ---- */
+.btn.ghost.danger {
+  color: var(--err-600);
+}
+.btn.ghost.danger:hover {
+  background: var(--err-100);
+  color: var(--err-600);
+}
+
+/* ---- Empty / Loading / Error States ---- */
+.empty-state, .error-state, .loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+}
+.empty-state app-icon, .error-state app-icon {
+  color: var(--ink-300);
+  margin-bottom: 16px;
+}
+.error-state app-icon {
+  color: var(--err-600);
+}
+.empty-state h3, .error-state h3 {
+  font-size: 15px;
+  color: var(--ink-700);
+  margin: 0 0 4px;
+}
+.empty-state p, .error-state p {
+  font-size: 12.5px;
+  color: var(--ink-500);
+  margin: 0 0 16px;
+}
+
+/* ---- Skeleton Loading ---- */
+.skeleton-card {
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--ink-100) 25%, var(--ink-50) 50%, var(--ink-100) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.2s infinite;
+  border-radius: 4px;
+}
+.skeleton-avatar { height: 38px; width: 38px; border-radius: 6px; flex-shrink: 0; }
+.skeleton-content { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+.skeleton-title { height: 16px; width: 70%; }
+.skeleton-line { height: 12px; width: 50%; }
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}

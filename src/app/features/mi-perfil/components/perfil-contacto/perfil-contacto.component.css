@@ -1,0 +1,94 @@
+.card-h h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink-900);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.contacto-grid {
+  display: grid;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.contacto-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.contacto-item .label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-500);
+  font-weight: 700;
+}
+
+.contacto-item .value {
+  font-size: 14px;
+  color: var(--ink-800);
+}
+
+.contacto-item .link {
+  color: var(--brand-700);
+  text-decoration: none;
+}
+
+.contacto-item .link:hover {
+  text-decoration: underline;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 0;
+}
+
+.field input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--r-sm);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: var(--paper);
+  transition: border-color 0.15s;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: var(--brand-700);
+  box-shadow: 0 0 0 2px var(--brand-50);
+}
+
+.field input.error {
+  border-color: var(--err-600);
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-700);
+  margin-bottom: 4px;
+}
+
+.error-msg {
+  display: block;
+  font-size: 11px;
+  color: var(--err-600);
+  margin-top: 2px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}

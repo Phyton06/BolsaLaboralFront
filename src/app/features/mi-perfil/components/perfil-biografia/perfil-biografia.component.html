@@ -1,0 +1,77 @@
+<div class="card">
+  <div class="card-h">
+    <app-icon [name]="'user'" [size]="18" />
+    <h3>Biografía</h3>
+    <div class="spacer"></div>
+    @if (!isEditing() && !aiReviewOpen()) {
+      <button class="btn ghost btn-sm" (click)="optimize.emit()" [disabled]="aiOptimizing()">
+        <app-icon [name]="'flame'" [size]="14" />
+        Optimizar con IA
+      </button>
+      <button class="btn ghost btn-sm" (click)="onEdit()">
+        <app-icon [name]="'settings'" [size]="14" />
+        Editar
+      </button>
+    }
+  </div>
+  <hr class="divider" />
+
+  <!-- AI Review panel -->
+  @if (aiReviewOpen() && aiResult()) {
+    <div class="ai-review">
+      <h4>Resultado de optimización IA</h4>
+      <div class="ai-comparison">
+        <div class="ai-col original">
+          <span class="ai-label">Original</span>
+          <p>{{ biografia() || '(sin biografía)' }}</p>
+        </div>
+        <div class="ai-col optimized">
+          <span class="ai-label">Optimizada</span>
+          <p>{{ aiResult()!.biografia_optimizada }}</p>
+        </div>
+      </div>
+      <div class="ai-actions">
+        <button class="btn primary" (click)="applyAi.emit()">Aplicar optimización</button>
+        <button class="btn" (click)="discardAi.emit()">Descartar</button>
+      </div>
+    </div>
+  }
+
+  <!-- AI optimizing indicator -->
+  @if (aiOptimizing()) {
+    <div class="ai-loading">
+      <app-icon [name]="'clock'" [size]="18" />
+      <span>Optimizando con IA...</span>
+    </div>
+  }
+
+  @if (!isEditing() && !aiReviewOpen()) {
+    <!-- View mode -->
+    <div class="bio-content">
+      @if (biografia()) {
+        <p>{{ biografia() }}</p>
+      } @else {
+        <p class="empty-state">Aún no has escrito tu biografía profesional.</p>
+      }
+    </div>
+  } @else if (isEditing()) {
+    <!-- Edit mode -->
+    <div class="edit-form">
+      <div class="field">
+        <label for="bio-textarea">Tu biografía profesional</label>
+        <textarea
+          id="bio-textarea"
+          rows="5"
+          placeholder="Describe tu perfil profesional, experiencia y objetivos..."
+          [(ngModel)]="localBiografia"
+        ></textarea>
+      </div>
+      <div class="actions">
+        <button class="btn primary" (click)="onSave()" [disabled]="saving()">
+          @if (saving()) { Guardando... } @else { Guardar }
+        </button>
+        <button class="btn" (click)="onCancel()" [disabled]="saving()">Cancelar</button>
+      </div>
+    </div>
+  }
+</div>

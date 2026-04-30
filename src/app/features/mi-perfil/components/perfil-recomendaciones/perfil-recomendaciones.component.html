@@ -1,0 +1,84 @@
+<div class="card">
+  <div class="card-h">
+    <app-icon [name]="'radar'" [size]="18" />
+    <h3>Recomendaciones IA</h3>
+  </div>
+  <hr class="divider" />
+
+  @if (loading()) {
+    <div class="placeholder" style="height: 120px;"></div>
+  } @else if (recomendaciones()) {
+    <div class="recomendaciones">
+      <!-- Resumen -->
+      <div class="resumen">
+        <div class="resumen-item">
+          <span class="resumen-label">Técnico</span>
+          <span class="resumen-value">{{ recomendaciones()!.resumen.puntaje_tecnico }}%</span>
+        </div>
+        <div class="resumen-item">
+          <span class="resumen-label">Cognitivo</span>
+          <span class="resumen-value">{{ recomendaciones()!.resumen.puntaje_cognitivo }}%</span>
+        </div>
+        <div class="resumen-item">
+          <span class="resumen-label">Habilidades</span>
+          <span class="resumen-value">{{ recomendaciones()!.resumen.total_habilidades }}</span>
+        </div>
+      </div>
+
+      <!-- Puntos fuertes -->
+      @if (recomendaciones()!.puntos_fuertes.length) {
+        <div class="section">
+          <h4 class="section-title ok">
+            <app-icon [name]="'check'" [size]="14" />
+            Puntos fuertes
+          </h4>
+          <ul>
+            @for (p of recomendaciones()!.puntos_fuertes; track p) {
+              <li>{{ p }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Puntos débiles -->
+      @if (recomendaciones()!.puntos_debiles.length) {
+        <div class="section">
+          <h4 class="section-title warn">
+            <app-icon [name]="'flame'" [size]="14" />
+            Áreas de mejora
+          </h4>
+          <ul>
+            @for (p of recomendaciones()!.puntos_debiles; track p) {
+              <li>{{ p }}</li>
+            }
+          </ul>
+        </div>
+      }
+
+      <!-- Cursos sugeridos -->
+      @if (recomendaciones()!.cursos_sugeridos.length) {
+        <div class="section">
+          <h4 class="section-title">
+            <app-icon [name]="'book'" [size]="14" />
+            Cursos sugeridos
+          </h4>
+          @for (curso of recomendaciones()!.cursos_sugeridos; track curso.titulo) {
+            <div class="curso-item">
+              <app-chip
+                [color]="curso.prioridad === 'alta' ? 'err' : curso.prioridad === 'media' ? 'warn' : 'info'"
+              >
+                {{ curso.prioridad }}
+              </app-chip>
+              <div>
+                <strong>{{ curso.titulo }}</strong>
+                <p>{{ curso.descripcion }}</p>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <p class="empty-state">No hay recomendaciones disponibles.</p>
+  }
+</div>

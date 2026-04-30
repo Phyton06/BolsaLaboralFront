@@ -1,0 +1,78 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">EVALUACIONES · CATÁLOGO</div>
+    <h1>Tus Evaluaciones</h1>
+    <div class="desc">
+      Completá las pruebas para mejorar tu perfil y aumentar tu match con vacantes.
+    </div>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="loading-state">
+    @for (i of [1,2,3,4]; track i) {
+      <div class="card placeholder" style="height: 180px;"></div>
+    }
+  </div>
+} @else if (error()) {
+  <div class="error-banner">
+    <app-icon [name]="'x'" [size]="18" />
+    <span>{{ error() }}</span>
+    <button class="btn sm primary" (click)="cargarCatalogo()">Reintentar</button>
+  </div>
+} @else {
+  <div class="grid">
+    @for (prueba of catalogo(); track prueba.tipo) {
+      <div class="card prueba-card">
+        <div class="prueba-header">
+          <div class="prueba-icon" [style.background]="meta[prueba.tipo].color + '20'" [style.color]="meta[prueba.tipo].color">
+            <app-icon [name]="meta[prueba.tipo].icono" [size]="24" />
+          </div>
+          <div class="prueba-info">
+            <h3>{{ meta[prueba.tipo].etiqueta }}</h3>
+            <p>{{ meta[prueba.tipo].descripcion }}</p>
+          </div>
+        </div>
+
+        <div class="prueba-meta">
+          <div class="meta-item">
+            <app-icon [name]="'clock'" [size]="12" />
+            <span>{{ prueba.minutos }} min</span>
+          </div>
+          <div class="meta-item">
+            <app-icon [name]="'file'" [size]="12" />
+            <span>{{ prueba.cantidad_preguntas }} preguntas</span>
+          </div>
+          <div class="meta-item">
+            <app-icon [name]="'info'" [size]="12" />
+            <span>{{ meta[prueba.tipo].regla }}</span>
+          </div>
+        </div>
+
+        @if (prueba.completada && prueba.ultimo_puntaje !== null) {
+          <div class="prueba-score">
+            <span class="score-label">Último puntaje</span>
+            <span class="score-value" [style.color]="getScoreColor(prueba.ultimo_puntaje)">
+              {{ prueba.ultimo_puntaje }}%
+            </span>
+          </div>
+        }
+
+        <div class="prueba-footer">
+          <app-chip [color]="getEstado(prueba).chip">
+            {{ getEstado(prueba).label }}
+          </app-chip>
+          <button
+            class="btn btn-sm"
+            [class.primary]="!getEstado(prueba).disabled"
+            [class.ghost]="getEstado(prueba).disabled"
+            [disabled]="getEstado(prueba).disabled"
+            (click)="onIniciar(prueba.tipo)"
+          >
+            {{ getEstado(prueba).accion }}
+          </button>
+        </div>
+      </div>
+    }
+  </div>
+}

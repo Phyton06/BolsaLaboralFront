@@ -42,30 +42,8 @@ export class MainLayoutComponent implements OnInit {
   userInitials = '';
   userRole: 'egresado' | 'empresa' | 'admin' = 'egresado';
   
-  navItems: NavItem[] = [
-    { icon:'home', label:'Inicio', active:true },
-    { icon:'briefcase', label:'Vacantes', badge:'128' },
-    { icon:'edu', label:'Evaluaciones', badge:'2' },
-    { icon:'file', label:'Mis Postulaciones' },
-    { icon:'user', label:'Mi Perfil' },
-    { icon:'radar', label:'Mi Radar' },
-  ];
-
-  sidebarGroups: SidebarGroup[] = [
-    { items: [
-      { icon:'home', label:'Inicio', active:true },
-      { icon:'briefcase', label:'Vacantes', badge:'128' },
-      { icon:'edu', label:'Evaluaciones', badge:'2' },
-      { icon:'file', label:'Mis Postulaciones' },
-      { icon:'user', label:'Mi Perfil / CV' },
-      { icon:'radar', label:'Mi Radar' },
-    ]},
-    { label:'Recursos', items: [
-      { icon:'book', label:'Guía de Pruebas' },
-      { icon:'mail', label:'Mensajes' },
-      { icon:'settings', label:'Configuración' },
-    ]},
-  ];
+  navItems: NavItem[] = [];
+  sidebarGroups: SidebarGroup[] = [];
 
   constructor(
     private authService: AuthService,
@@ -78,10 +56,74 @@ export class MainLayoutComponent implements OnInit {
     this.userName = user?.nombre || 'Usuario';
     this.userInitials = this.getInitials(user?.nombre || '');
     this.userRole = this.getRole(user?.rol);
+    this.buildNavigation();
+  }
+
+  buildNavigation(): void {
+    if (this.userRole === 'empresa') {
+      // Empresa navigation
+      this.navItems = [
+        { icon: 'chart', label: 'Dashboard', active: true },
+        { icon: 'briefcase', label: 'Mis Vacantes' },
+        { icon: 'users', label: 'Candidatos' },
+        { icon: 'user', label: 'Mi Perfil' },
+      ];
+
+      this.sidebarGroups = [
+        { items: [
+          { icon: 'chart', label: 'Dashboard', active: true },
+          { icon: 'briefcase', label: 'Mis Vacantes' },
+          { icon: 'users', label: 'Candidatos' },
+          { icon: 'user', label: 'Mi Perfil' },
+        ]},
+        { label: 'Recursos', items: [
+          { icon: 'settings', label: 'Configuración' },
+        ]},
+      ];
+    } else if (this.userRole === 'admin') {
+      this.navItems = [
+        { icon: 'chart', label: 'Dashboard', active: true },
+        { icon: 'users', label: 'Empresas' },
+        { icon: 'user', label: 'Mi Perfil' },
+      ];
+      this.sidebarGroups = [
+        { items: [
+          { icon: 'chart', label: 'Dashboard', active: true },
+          { icon: 'users', label: 'Empresas' },
+          { icon: 'user', label: 'Mi Perfil' },
+        ]},
+      ];
+    } else {
+      // Egresado navigation (default)
+      this.navItems = [
+        { icon: 'home', label: 'Inicio', active: true },
+        { icon: 'briefcase', label: 'Vacantes', badge: '128' },
+        { icon: 'edu', label: 'Evaluaciones', badge: '2' },
+        { icon: 'file', label: 'Mis Postulaciones' },
+        { icon: 'user', label: 'Mi Perfil' },
+        { icon: 'radar', label: 'Mi Radar' },
+      ];
+
+      this.sidebarGroups = [
+        { items: [
+          { icon: 'home', label: 'Inicio', active: true },
+          { icon: 'briefcase', label: 'Vacantes', badge: '128' },
+          { icon: 'edu', label: 'Evaluaciones', badge: '2' },
+          { icon: 'file', label: 'Mis Postulaciones' },
+          { icon: 'user', label: 'Mi Perfil / CV' },
+          { icon: 'radar', label: 'Mi Radar' },
+        ]},
+        { label: 'Recursos', items: [
+          { icon: 'book', label: 'Guía de Pruebas' },
+          { icon: 'mail', label: 'Mensajes' },
+          { icon: 'settings', label: 'Configuración' },
+        ]},
+      ];
+    }
   }
 
   getInitials(name: string): string {
-    return name.split(' ').map((n: string) => n[0]).slice(0,2).join('').toUpperCase();
+    return name.split(' ').map((n: string) => n[0]).slice(0, 2).join('').toUpperCase();
   }
 
   getRole(rol?: string): 'egresado' | 'empresa' | 'admin' {

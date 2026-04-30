@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map, catchError, of, forkJoin } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { VacantesApiService } from './vacantes-api.service';
+import { AuthService } from '../../../core/services/auth/auth.service';
 
 export interface VacanteDisplay {
   id: number;
@@ -15,11 +16,13 @@ export interface VacanteDisplay {
   fuente: string;
   esNueva?: boolean;
   url_externa?: string;
+  url?: string;
   company?: string;
   title?: string;
   loc?: string;
   src?: string;
   isNew?: boolean;
+  yaPostulado?: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -29,39 +32,49 @@ export class VacantesService {
   cargando = signal<boolean>(false);
   error = signal<string | null>(null);
   
-  ubicaciones = signal<string[]>(['Sin preferencia', 'Remoto', 'Presencial']);
-  modalidades = signal<string[]>(['Sin preferencia', 'Presencial', 'Remoto']);
+  // Ubicaciones: se cargan del backend (32 estados + Sin preferencia)
+  ubicaciones = signal<string[]>(['Sin preferencia']);
   
   filtros = signal({
     search: '',
     ubicacion: 'Sin preferencia',
-    modalidad: 'Sin preferencia',
     minMatch: 0,
     incluirConvenio: true,
-    incluirDenue: true,
+    incluirExternas: true,
     pagina: 1
   });
 
   constructor(
     private http: HttpClient,
-    private vacantesApi: VacantesApiService
+    private vacantesApi: VacantesApiService,
+    private authService: AuthService
   ) {}
 
   cargarFiltrosYPerfil(): void {
     this.vacantesApi.getFiltros().subscribe({
       next: (data) => {
         if (data.ubicaciones?.length) {
-          this.ubicaciones.set(['Sin preferencia', ...data.ubicaciones]);
-        }
-        if (data.modalidades?.length) {
-          this.modalidades.set(data.modalidades);
+          this.ubicaciones.set(data.ubicaciones);
         }
       },
-      error: (err) => console.error('Error cargando filtros:', err)
+      error: (err) => {
+        console.error('Error cargando filtros:', err);
+        // Fallback con todos los estados
+        this.ubicaciones.set([
+          'Sin preferencia', 'Nayarit', 'Aguascalientes', 'Baja California',
+          'Baja California Sur', 'Campeche', 'Chiapas', 'Chihuahua',
+          'Ciudad de México', 'Coahuila', 'Colima', 'Durango', 'Guanajuato',
+          'Guerrero', 'Hidalgo', 'Jalisco', 'México', 'Michoacán',
+          'Morelos', 'Nuevo León', 'Oaxaca', 'Puebla', 'Querétaro',
+          'Quintana Roo', 'San Luis Potosí', 'Sinaloa', 'Sonora',
+          'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán',
+          'Zacatecas', 'Remoto'
+        ]);
+      }
     });
   }
 
-  cargarVacantes(): void {
+  cargarVacantes(joobleLocation?: string): void {
     this.cargando.set(true);
     this.error.set(null);
     
@@ -92,20 +105,26 @@ export class VacantesService {
               company: v.empresa,
               title: v.titulo,
               loc: v.ubicacion,
+              url_externa: v.url_externa,
               src: 'Convenio UT',
               isNew: false
             }))
-          }))
+          })),
+          catchError(err => {
+            console.error('Error cargando vacantes DB:', err);
+            return of({ source: 'backend', data: [] });
+          })
         )
       );
     }
     
-    // Load from Jooble
-    if (f.incluirDenue) {
+    // Load from Jooble (externas)
+    if (f.incluirExternas) {
+      const location = joobleLocation || 'Mexico';
       requests.push(
         this.vacantesApi.buscarExternas({
-          q: 'desarrollador',
-          location: 'Mexico',
+          q: 'software developer',
+          location: location,
           page: 1,
           limit: 20
         }).pipe(
@@ -116,7 +135,7 @@ export class VacantesService {
               match: 75,
               titulo: v.titulo || 'Sin título',
               empresa: v.empresa || 'Empresa',
-              ubicacion: v.ubicacion || 'Remoto',
+              ubicacion: v.ubicacion || location,
               tags: v.tags || [],
               sal: v.sal || 'A consultar',
               fuente: 'Jooble',
@@ -124,12 +143,13 @@ export class VacantesService {
               company: v.empresa,
               title: v.titulo,
               loc: v.ubicacion,
+              url_externa: v.url_externa || v.url,
               src: 'Jooble',
               isNew: false
             }))
           })),
           catchError(err => {
-            console.error('Jooble error:', err);
+            console.error('Error cargando vacantes Jooble:', err);
             return of({ source: 'jooble', data: [] });
           })
         )
@@ -144,7 +164,7 @@ export class VacantesService {
 
     forkJoin(requests).subscribe({
       next: (results) => {
-        let todas: any[] = [];
+        let todas: VacanteDisplay[] = [];
         
         for (const result of results) {
           if (result.data && result.data.length > 0) {
@@ -152,8 +172,26 @@ export class VacantesService {
           }
         }
         
-        this.vacantes.set(todas);
-        this.cargando.set(false);
+        // Marcar vacantes ya postuladas (solo Convenio UT)
+        if (this.authService.isAuthenticated() && this.authService.hasRole('egresado')) {
+          this.http.get<{ success: boolean; data: { id_postulacion: number; vacante_id: number }[] }>(
+            `${environment.apiUrl}/egresado/postulaciones`
+          ).pipe(
+            map(resp => resp.data || []),
+            catchError(() => of([]))
+          ).subscribe(postulaciones => {
+            const vacantesIds = new Set(postulaciones.map(p => p.vacante_id));
+            todas = todas.map(v => ({
+              ...v,
+              yaPostulado: v.src === 'Convenio UT' && vacantesIds.has(v.id)
+            }));
+            this.vacantes.set(todas);
+            this.cargando.set(false);
+          });
+        } else {
+          this.vacantes.set(todas);
+          this.cargando.set(false);
+        }
       },
       error: (err) => {
         console.error('Error:', err);
@@ -172,10 +210,9 @@ export class VacantesService {
     this.filtros.set({
       search: '',
       ubicacion: 'Sin preferencia',
-      modalidad: 'Sin preferencia',
       minMatch: 0,
       incluirConvenio: true,
-      incluirDenue: true,
+      incluirExternas: true,
       pagina: 1
     });
     this.cargarVacantes();

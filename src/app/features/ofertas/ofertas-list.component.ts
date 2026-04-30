@@ -2,34 +2,34 @@ import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '../../shared/components/icon/icon.component';
-import { ChipComponent } from '../../shared/components/chip/chip.component';
 import { VacantesService, VacanteDisplay } from './services/vacantes.service';
+import { VacantesApiService } from './services/vacantes-api.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ofertas-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, ChipComponent],
+  imports: [CommonModule, FormsModule, IconComponent],
   templateUrl: './ofertas-list.component.html',
   styleUrl: './ofertas-list.component.css'
 })
 export class OfertasListComponent implements OnInit {
-  
+
   vacantesService = inject(VacantesService);
-  
+  vacantesApi = inject(VacantesApiService);
+
   jobsList = this.vacantesService.vacantes;
   cargando = this.vacantesService.cargando;
   error = this.vacantesService.error;
-  
-  // Opciones de filtros
+
+  // Opciones de filtros (del backend)
   ubicaciones = this.vacantesService.ubicaciones;
-  modalidades = this.vacantesService.modalidades;
-  
+
   // Filtros locales
-  selectedUbicacion = signal<string>('Nayarit');
-  selectedModalidad = signal<string>('Sin preferencia');
+  selectedUbicacion = signal<string>('Sin preferencia');
   selectedSource = signal<'Convenio UT' | 'Externas' | 'both'>('both');
-  minMatch = signal<number>(70);
-  
+  minMatch = signal<number>(0);
+
   viewMode = signal<'grid' | 'list'>('grid');
 
   ngOnInit(): void {
@@ -37,68 +37,136 @@ export class OfertasListComponent implements OnInit {
     this.vacantesService.cargarVacantes();
   }
 
-  filteredJobs = computed(() => this.jobsList());
+  // Filtra los datos CARGADOS del backend (filtro client-side)
+  filteredJobs = computed(() => {
+    let jobs = this.jobsList();
+    const ub = this.selectedUbicacion();
+    const src = this.selectedSource();
+    const mm = this.minMatch();
 
-  aplicarFiltros(): void {
-    const filtros: any = { minMatch: this.minMatch() };
-    
-    if (this.selectedUbicacion()) {
-      filtros.ubicacion = this.selectedUbicacion();
+    // Filtrar por ubicación geográfica (solo si no es "Sin preferencia")
+    if (ub !== 'Sin preferencia') {
+      jobs = jobs.filter(j => {
+        const loc = (j.loc || j.ubicacion || '').toLowerCase();
+        return loc.includes(ub.toLowerCase());
+      });
     }
-    
-    if (this.selectedModalidad()) {
-      filtros.modalidad = this.selectedModalidad();
+
+    // Filtrar por fuente
+    if (src === 'Convenio UT') {
+      jobs = jobs.filter(j => j.src === 'Convenio UT');
+    } else if (src === 'Externas') {
+      jobs = jobs.filter(j => j.src !== 'Convenio UT');
     }
-    
-    if (this.selectedSource() === 'Convenio UT') {
-      filtros.incluirConvenio = true;
-      filtros.incluirDenue = false;
-    } else if (this.selectedSource() === 'Externas') {
-      filtros.incluirConvenio = false;
-      filtros.incluirDenue = true;
-    } else {
-      filtros.incluirConvenio = true;
-      filtros.incluirDenue = true;
+
+    // Filtrar por match mínimo
+    if (mm > 0) {
+      jobs = jobs.filter(j => j.match >= mm);
     }
-    
-    this.vacantesService.aplicarFiltros(filtros);
-  }
+
+    return jobs.sort((a, b) => b.match - a.match);
+  });
 
   onUbicacionChange(ubicacion: string): void {
     this.selectedUbicacion.set(ubicacion);
-    this.aplicarFiltros();
-  }
-
-  onModalidadChange(modalidad: string): void {
-    this.selectedModalidad.set(modalidad);
-    this.aplicarFiltros();
+    // Recargar Jooble con la nueva ubicación
+    const location = ubicacion === 'Sin preferencia' ? 'Mexico' : ubicacion;
+    this.vacantesService.cargarVacantes(location);
   }
 
   onSourceChange(source: 'Convenio UT' | 'Externas' | 'both'): void {
     this.selectedSource.set(source);
-    this.aplicarFiltros();
   }
 
   clearFilters(): void {
-    this.selectedUbicacion.set('Nayarit');
-    this.selectedModalidad.set('Sin preferencia');
+    this.selectedUbicacion.set('Sin preferencia');
     this.selectedSource.set('both');
-    this.minMatch.set(70);
-    this.vacantesService.limpiarFiltros();
+    this.minMatch.set(0);
   }
 
   recargar(): void {
     this.vacantesService.cargarVacantes();
   }
 
-  getCompanyInitials(empresa: string | undefined): string {
-    if (!empresa) return '??';
-    return empresa.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-  }
+  postularse(job: VacanteDisplay): void {
+    // Ya postulado → no hacer nada
+    if (job.yaPostulado) return;
 
-  getMatchColor(match: number): string {
-    if (match >= 85) return 'var(--ok-600)';
-    if (match >= 75) return 'var(--brand-600)';
-    return 'var(--gold-600)';
+    // Vacante externa (Jooble) → abrir URL en nueva pestaña
+    if (job.src !== 'Convenio UT') {
+      const url = job.url_externa || job.url || '';
+      if (!url) {
+        Swal.fire({
+          title: 'Sin URL disponible',
+          text: 'Esta vacante no tiene un enlace externo disponible.',
+          icon: 'warning',
+          confirmButtonColor: '#0f6b34',
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: 'Postularse',
+        html: `Serás redirigido al sitio de <b>${job.company}</b> para completar tu postulación.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0f6b34',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      });
+      return;
+    }
+
+    // Vacante de Convenio UT → postular en la DB
+    Swal.fire({
+      title: '¿Estás seguro?',
+      html: `Quieres postularte a <b>${job.title}</b> en <b>${job.company}</b>.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, postularme',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#0f6b34',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.vacantesApi.postular(job.id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Postulación enviada!',
+              text: 'Te has postulado correctamente a esta vacante.',
+              icon: 'success',
+              confirmButtonColor: '#0f6b34',
+            });
+          },
+          error: (err) => {
+            console.error('Error al postular:', err);
+            let msg = 'Ocurrió un error al postular.';
+
+            // Detectar errores específicos
+            if (err?.status === 401) {
+              msg = 'Debes iniciar sesión para postularte.';
+            } else if (err?.status === 403) {
+              msg = 'Solo los egresados pueden postularse a vacantes de Convenio UT.';
+            } else if (err?.error?.error) {
+              msg = err.error.error;
+            } else if (err?.error?.message) {
+              msg = err.error.message;
+            } else if (err?.error?.data?.message) {
+              msg = err.error.data.message;
+            }
+
+            Swal.fire({
+              title: 'Error',
+              text: msg,
+              icon: 'error',
+              confirmButtonColor: '#0f6b34',
+            });
+          }
+        });
+      }
+    });
   }
 }
