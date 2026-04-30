@@ -1,0 +1,173 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">INICIO · BIENVENIDA</div>
+    <h1>Hola, Mariana</h1>
+    <div class="desc">Tu perfil técnico tiene 87% de completitud. Tienes 2 evaluaciones pendientes.</div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="btn ghost"><app-icon name="download" [size]="14" /> Exportar CV</button>
+    <button class="btn primary"><app-icon name="plus" [size]="14" /> Postular</button>
+  </div>
+</div>
+
+<!-- Top stats -->
+<div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:14px;margin-bottom:20px;">
+  <app-stat label="Postulaciones activas" value="7" delta="+2 esta semana" />
+  <app-stat label="Coincidencia promedio" value="74" suffix="%" delta="+6%" />
+  <app-stat label="Pruebas completadas" value="3" suffix="/ 4" />
+  <app-stat label="Vistas a tu perfil" value="42" delta="+18 vs. mes ant." />
+</div>
+
+<!-- Two column -->
+<div style="display:grid;grid-template-columns:1.4fr 1fr;gap:14px;margin-bottom:14px;">
+  <!-- Radar -->
+  <div class="card">
+    <div class="card-h">
+      <div>
+        <h3>Tu radar de competencias</h3>
+        <div class="sub" style="margin-top:2px;">Comparado contra el perfil ideal de tus vacantes activas</div>
+      </div>
+      <span class="chip brand">Actualizado hoy</span>
+    </div>
+    <div style="display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;">
+      <app-radar-chart
+        [size]="260"
+        [axes]="radarAxes"
+        [datasets]="radarDatasets"
+      ></app-radar-chart>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:10px;height:10px;border-radius:2px;background:var(--brand-700);flex-shrink:0;"></div>
+          <div style="flex:1;font-size:12.5px;">Tu perfil actual</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-700);font-weight:600;">74 / 100</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:10px;height:10px;border-radius:2px;background:var(--gold-600);flex-shrink:0;"></div>
+          <div style="flex:1;font-size:12.5px;">Perfil ideal promedio</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--ink-700);font-weight:600;">76 / 100</div>
+        </div>
+        <div class="divider"></div>
+        <div style="display:flex;gap:10px;padding:10px;background:var(--ink-50);border-radius:6px;">
+          <div style="color:var(--ok-600);"><app-icon name="flame" [size]="16" /></div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-800);">Fortaleza: Técnico</div>
+            <div style="font-size:11.5px;color:var(--ink-500);margin-top:1px;">Estás en el percentil 91 de tu carrera.</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;padding:10px;background:var(--ink-50);border-radius:6px;">
+          <div style="color:var(--warn-600);"><app-icon name="target" [size]="16" /></div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--ink-800);">Área de oportunidad</div>
+            <div style="font-size:11.5px;color:var(--ink-500);margin-top:1px;">Liderazgo bajo el promedio del perfil ideal.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Próximas eval -->
+  <div class="card">
+    <div class="card-h">
+      <h3>Evaluaciones pendientes</h3>
+      <a style="font-size:11.5px;color:var(--brand-700);font-weight:600;">Ver todas →</a>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--ink-200);border-radius:8px;">
+        <div style="width:4px;height:36px;background:var(--viz-4);border-radius:2px;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--viz-4);">Cognitiva</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">Razonamiento lógico-verbal</div>
+          <div style="font-size:11px;color:var(--ink-500);margin-top:2px;display:flex;gap:10px;">
+            <span><app-icon name="clock" [size]="11" /> 35 min</span>
+            <span>· Vence en 2 días</span>
+          </div>
+        </div>
+        <button class="btn primary sm">Iniciar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--ink-200);border-radius:8px;">
+        <div style="width:4px;height:36px;background:var(--gold-700);border-radius:2px;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--gold-700);">Proyectiva</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">Test de Wartegg adaptado</div>
+          <div style="font-size:11px;color:var(--ink-500);margin-top:2px;display:flex;gap:10px;">
+            <span><app-icon name="clock" [size]="11" /> 20 min</span>
+            <span>· Vence en 5 días</span>
+          </div>
+        </div>
+        <button class="btn primary sm">Iniciar</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;border:1px solid var(--ink-200);border-radius:8px;">
+        <div style="width:4px;height:36px;background:var(--ok-600);border-radius:2px;"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+            <span style="font-size:10px;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;color:var(--ok-600);">Técnica</span>
+            <span class="chip warn" style="font-size:9px;padding:1px 6px;">EMPRESA</span>
+          </div>
+          <div style="font-size:13px;font-weight:600;">Desarrollo Backend - Node.js</div>
+          <div style="font-size:11px;color:var(--ink-500);margin-top:2px;display:flex;gap:10px;">
+            <span><app-icon name="clock" [size]="11" /> 60 min</span>
+            <span>· Asignado por Soluciones Pacífico</span>
+          </div>
+        </div>
+        <button class="btn primary sm">Iniciar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom row -->
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+  <div class="card">
+    <div class="card-h">
+      <h3>Vacantes recomendadas</h3>
+      <span class="sub">Match ≥ 75%</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      @for (job of recommendedJobs; track job.title) {
+        <div style="display:flex;gap:12px;padding:11px;border:1px solid var(--ink-200);border-radius:8px;">
+          <div style="width:44px;height:44px;border-radius:6px;background:var(--brand-100);display:grid;place-items:center;flex-shrink:0;color:var(--brand-700);font-weight:700;font-family:'IBM Plex Serif',serif;font-size:16px;">
+            {{ getCompanyInitials(job.company) }}
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:13px;font-weight:600;">{{ job.title }}</div>
+            <div style="font-size:11.5px;color:var(--ink-500);">{{ job.company }} · {{ job.loc }}</div>
+            <div style="font-size:11px;color:var(--ink-700);margin-top:3px;font-family:'IBM Plex Mono',monospace;">{{ job.sal }}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-family:'IBM Plex Serif',serif;font-size:18px;font-weight:600;color:{{ job.match>=85 ? 'var(--ok-600)' : 'var(--brand-700)' }};line-height:1;">{{ job.match }}%</div>
+            <div style="font-size:9.5px;color:var(--ink-400);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">match</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-h">
+      <h3>Estado de mis postulaciones</h3>
+    </div>
+    <table class="t">
+      <thead>
+        <tr>
+          <th>Empresa</th>
+          <th>Puesto</th>
+          <th>Etapa</th>
+          <th>Match</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (post of postulacionesTable; track post.empresa) {
+          <tr>
+            <td><b>{{ post.empresa }}</b></td>
+            <td>{{ post.puesto }}</td>
+            <td><app-chip [color]="post.etapaClass">{{ post.etapa }}</app-chip></td>
+            <td class="mono" style="font-weight:700;">{{ post.match }}%</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

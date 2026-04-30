@@ -1,23 +1,71 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthService } from '../../../core/services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 import { AuthApiService } from '../../../features/auth/services/auth-api.service';
-import { CommonModule as NgCommon } from '@angular/common';
+import { TopbarComponent } from '../../../shared/components/layout/topbar.component';
+import { SidebarComponent } from '../../../shared/components/layout/sidebar.component';
+import { AiAdvisorComponent } from '../../../shared/components/ai-advisor/ai-advisor.component';
+
+interface NavItem {
+  icon: string;
+  label: string;
+  active?: boolean;
+  badge?: string | number;
+}
+
+interface SidebarGroup {
+  label?: string;
+  items: NavItem[];
+}
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    TopbarComponent,
+    SidebarComponent,
+    AiAdvisorComponent
+  ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css'
 })
 export class MainLayoutComponent implements OnInit {
-  sidebarOpen = false;
-  username: string | null = null;
-  isCandidate = false;
-  isEmpresa = false;
-  isAdmin = false;
+  userMenuOpen = signal(false);
+  aiOpen = signal(false);
+  
+  userName = '';
+  userInitials = '';
+  userRole: 'egresado' | 'empresa' | 'admin' = 'egresado';
+  
+  navItems: NavItem[] = [
+    { icon:'home', label:'Inicio', active:true },
+    { icon:'briefcase', label:'Vacantes', badge:'128' },
+    { icon:'edu', label:'Evaluaciones', badge:'2' },
+    { icon:'file', label:'Mis Postulaciones' },
+    { icon:'user', label:'Mi Perfil' },
+    { icon:'radar', label:'Mi Radar' },
+  ];
+
+  sidebarGroups: SidebarGroup[] = [
+    { items: [
+      { icon:'home', label:'Inicio', active:true },
+      { icon:'briefcase', label:'Vacantes', badge:'128' },
+      { icon:'edu', label:'Evaluaciones', badge:'2' },
+      { icon:'file', label:'Mis Postulaciones' },
+      { icon:'user', label:'Mi Perfil / CV' },
+      { icon:'radar', label:'Mi Radar' },
+    ]},
+    { label:'Recursos', items: [
+      { icon:'book', label:'Guía de Pruebas' },
+      { icon:'mail', label:'Mensajes' },
+      { icon:'settings', label:'Configuración' },
+    ]},
+  ];
 
   constructor(
     private authService: AuthService,
@@ -27,14 +75,27 @@ export class MainLayoutComponent implements OnInit {
 
   ngOnInit(): void {
     const user = this.authService.getUser();
-    this.username = user?.nombre || null;
-    this.isCandidate = this.authService.hasRole('candidato');
-    this.isEmpresa = this.authService.hasRole('empresa');
-    this.isAdmin = this.authService.hasRole('admin');
+    this.userName = user?.nombre || 'Usuario';
+    this.userInitials = this.getInitials(user?.nombre || '');
+    this.userRole = this.getRole(user?.rol);
   }
 
-  toggleSidebar(): void {
-    this.sidebarOpen = !this.sidebarOpen;
+  getInitials(name: string): string {
+    return name.split(' ').map((n: string) => n[0]).slice(0,2).join('').toUpperCase();
+  }
+
+  getRole(rol?: string): 'egresado' | 'empresa' | 'admin' {
+    if (rol === 'empresa') return 'empresa';
+    if (rol === 'admin') return 'admin';
+    return 'egresado';
+  }
+
+  toggleUserMenu(): void {
+    this.userMenuOpen.set(!this.userMenuOpen());
+  }
+
+  openAI(): void {
+    this.aiOpen.set(true);
   }
 
   logout(): void {

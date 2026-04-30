@@ -1,0 +1,266 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.shell {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  background: var(--ink-50);
+}
+
+.page-head {
+  margin-bottom: 24px;
+}
+
+.crumbs {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--ink-400);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.page-head h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink-800);
+  margin: 0 0 4px;
+}
+
+.desc {
+  font-size: 12.5px;
+  color: var(--ink-500);
+  margin: 0;
+}
+
+.content-layout {
+  display: flex;
+  gap: 20px;
+}
+
+.filters-panel {
+  width: 240px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-height: calc(100vh - 160px);
+  overflow-y: auto;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-title {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--ink-600);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.match-value {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10.5px;
+  color: var(--brand-600);
+}
+
+.filter-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: var(--ink-700);
+  cursor: pointer;
+}
+
+.filter-check input[type="checkbox"] {
+  accent-color: var(--brand-600);
+}
+
+.range-slider {
+  width: 100%;
+  accent-color: var(--brand-600);
+}
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--ink-200);
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+
+.btn-ghost:hover {
+  background: var(--ink-50);
+}
+
+.results-area {
+  flex: 1;
+  min-width: 0;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.results-count {
+  font-size: 12.5px;
+  color: var(--ink-500);
+}
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.view-toggle button {
+  background: #fff;
+  border: 1px solid var(--ink-200);
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.view-toggle button.active {
+  background: var(--brand-50);
+  border-color: var(--brand-300);
+}
+
+.jobs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.jobs-grid.list-view {
+  grid-template-columns: 1fr;
+}
+
+.job-card {
+  border: 1px solid var(--ink-200);
+  border-radius: 10px;
+  padding: 14px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.job-card-top {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.company-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  background: var(--brand-100);
+  color: var(--brand-700);
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.job-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.job-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--ink-800);
+  margin-bottom: 2px;
+}
+
+.job-company {
+  font-size: 12px;
+  color: var(--ink-600);
+}
+
+.job-loc {
+  font-size: 11px;
+  color: var(--ink-400);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 2px;
+}
+
+.job-match {
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 18px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.skill-pill {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ink-100);
+  color: var(--ink-700);
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.job-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.job-sal {
+  font-size: 11px;
+  color: var(--ink-700);
+  font-family: 'IBM Plex Mono', monospace;
+}
+
+.job-badges {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}

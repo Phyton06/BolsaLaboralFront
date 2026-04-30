@@ -1,0 +1,133 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">VACANTES · CATÁLOGO ABIERTO</div>
+    <h1>Encuentra tu lugar</h1>
+    <div class="desc">128 vacantes activas — 47 con convenio UT · 81 vía bolsa nacional</div>
+  </div>
+</div>
+
+<div style="display:grid;grid-template-columns:240px 1fr;gap:18px;">
+  <!-- Filters -->
+  <div class="card tight" style="height:fit-content;position:sticky;top:0;">
+    <div style="font-size:11px;text-transform:uppercase;font-weight:700;color:var(--ink-500);letter-spacing:0.06em;margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+      <app-icon name="filter" [size]="13" /> Filtros
+    </div>
+
+    <div style="border-top:1px solid var(--ink-100);padding:12px 0 4px;">
+      <div style="font-size:11.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+        Ubicación
+        <app-icon name="chevD" [size]="12" color="var(--ink-400)" />
+      </div>
+      @for (loc of locations(); track loc) {
+        <label style="display:flex;align-items:center;gap:8px;padding:4px 4px;cursor:pointer;font-size:12px;color:var(--ink-700);">
+          <span style="width:14px;height:14px;border-radius:3px;background:{{ selectedLocations().includes(loc) ? 'var(--brand-700)' : '#fff' }};border:1px solid {{ selectedLocations().includes(loc) ? 'var(--brand-700)' : 'var(--ink-300)' }};display:grid;place-items:center;color:#fff;flex-shrink:0;">
+            @if (selectedLocations().includes(loc)) {
+              <app-icon name="check" [size]="10" [stroke]="3" />
+            }
+          </span>
+          {{ loc }}
+        </label>
+      }
+    </div>
+
+    <div style="border-top:1px solid var(--ink-100);padding:12px 0 4px;">
+      <div style="font-size:11.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px;display:flex;justify-content:space-between;align-items:center;">
+        Área
+        <app-icon name="chevD" [size]="12" color="var(--ink-400)" />
+      </div>
+      @for (area of areas(); track area) {
+        <label style="display:flex;align-items:center;gap:8px;padding:4px 4px;cursor:pointer;font-size:12px;color:var(--ink-700);">
+          <span style="width:14px;height:14px;border-radius:3px;background:{{ selectedAreas().includes(area) ? 'var(--brand-700)' : '#fff' }};border:1px solid {{ selectedAreas().includes(area) ? 'var(--brand-700)' : 'var(--ink-300)' }};display:grid;place-items:center;color:#fff;flex-shrink:0;">
+            @if (selectedAreas().includes(area)) {
+              <app-icon name="check" [size]="10" [stroke]="3" />
+            }
+          </span>
+          {{ area }}
+        </label>
+      }
+    </div>
+
+    <div style="border-top:1px solid var(--ink-100);padding:12px 0 4px;">
+      <div style="font-size:11.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px;">Match mínimo</div>
+      <div style="padding:4px 4px 0;">
+        <input type="range" min="0" max="100" [ngModel]="minMatch()" (ngModelChange)="minMatch.set($event)" style="width:100%;accent-color:var(--brand-700);" />
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink-500);font-family:'IBM Plex Mono',monospace;">
+          <span>0%</span><span style="color:var(--brand-700);font-weight:700;">{{ minMatch() }}%</span><span>100%</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--ink-100);padding:12px 0 4px;">
+      <div style="font-size:11.5px;font-weight:600;color:var(--ink-700);margin-bottom:6px;">Origen</div>
+      @for (src of sources(); track src.label; let i = $index) {
+        <label style="display:flex;align-items:center;gap:8px;padding:4px 4px;cursor:pointer;font-size:12px;color:var(--ink-700);">
+          <span style="width:14px;height:14px;border-radius:3px;background:{{ src.checked ? 'var(--brand-700)' : '#fff' }};border:1px solid {{ src.checked ? 'var(--brand-700)' : 'var(--ink-300)' }};display:grid;place-items:center;color:#fff;flex-shrink:0;">
+            @if (src.checked) {
+              <app-icon name="check" [size]="10" [stroke]="3" />
+            }
+          </span>
+          {{ src.label }}
+        </label>
+      }
+    </div>
+
+    <button class="btn ghost sm" style="width:100%;justify-content:center;margin-top:8px;" (click)="clearFilters()">Limpiar filtros</button>
+  </div>
+
+  <!-- Results -->
+  <div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+      <div style="flex:1;font-size:12.5px;color:var(--ink-500);">
+        <b style="color:var(--ink-800);">{{ filteredJobs().length }} resultados</b> · ordenados por compatibilidad
+      </div>
+      <div style="display:flex;gap:4px;">
+        <button class="btn sm ghost" [style.borderColor]="viewMode() === 'grid' ? 'var(--brand-700)' : ''" [style.color]="viewMode() === 'grid' ? 'var(--brand-700)' : ''" (click)="viewMode.set('grid')">
+          <app-icon name="grid" [size]="12" /> Grid
+        </button>
+        <button class="btn sm ghost" [style.borderColor]="viewMode() === 'list' ? 'var(--brand-700)' : ''" [style.color]="viewMode() === 'list' ? 'var(--brand-700)' : ''" (click)="viewMode.set('list')">Lista</button>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      @for (job of filteredJobs(); track job.title) {
+        <div style="padding:14px;border:1px solid var(--ink-200);border-radius:10px;background:#fff;display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div style="display:flex;gap:10px;flex:1;min-width:0;">
+              <div style="width:38px;height:38px;border-radius:6px;background:var(--brand-100);display:grid;place-items:center;flex-shrink:0;color:var(--brand-700);font-weight:700;font-family:'IBM Plex Serif',serif;">
+                {{ getCompanyInitials(job.company) }}
+              </div>
+              <div style="min-width:0;">
+                <div style="display:flex;gap:6px;align-items:center;">
+                  <div style="font-size:13px;font-weight:600;line-height:1.2;">{{ job.title }}</div>
+                  @if (job.isNew) {
+                    <span class="chip gold" style="font-size:9px;padding:1px 6px;">NUEVO</span>
+                  }
+                </div>
+                <div style="font-size:11.5px;color:var(--ink-500);margin-top:2px;">{{ job.company }}</div>
+              </div>
+            </div>
+            <div style="text-align:right;flex-shrink:0;margin-left:8px;">
+              <div style="font-family:'IBM Plex Serif',serif;font-size:18px;font-weight:600;color:{{ getMatchColor(job.match) }};line-height:1;">{{ job.match }}%</div>
+              <div style="font-size:9px;color:var(--ink-400);text-transform:uppercase;letter-spacing:0.05em;font-weight:600;">match</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:14px;font-size:11px;color:var(--ink-600);">
+            <span><app-icon name="location" [size]="11" /> {{ job.loc }}</span>
+            <span style="font-family:'IBM Plex Mono',monospace;">{{ job.sal }}</span>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:5px;">
+            @for (tag of job.tags; track tag) {
+              <span class="chip outline" style="font-size:10px;">{{ tag }}</span>
+            }
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:2px;padding-top:8px;border-top:1px solid var(--ink-100);">
+            <span class="chip" style="font-size:10.5px;padding:2px 7px;background:{{ job.src === 'Convenio UT' ? 'var(--gold-100)' : 'var(--ink-100)' }};color:{{ job.src === 'Convenio UT' ? 'var(--gold-700)' : 'var(--ink-600)' }};">
+              @if (job.src === 'Convenio UT') { ◆ } {{ job.src }}
+            </span>
+            <button class="btn sm primary">Ver detalle →</button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>
