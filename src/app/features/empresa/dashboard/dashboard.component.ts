@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { StatComponent } from '../../../shared/components/stat/stat.component';
 import { BarChartComponent } from '../../../shared/components/charts/bar-chart.component';
@@ -12,7 +12,7 @@ import { EmpresaService, EmpresaStats, EmpresaVacante } from '../services/empres
 @Component({
   selector: 'app-empresa-dashboard',
   standalone: true,
-  imports: [CommonModule, StatComponent, BarChartComponent, FunnelComponent, ChipComponent, IconComponent],
+  imports: [CommonModule, RouterModule, StatComponent, BarChartComponent, FunnelComponent, ChipComponent, IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'

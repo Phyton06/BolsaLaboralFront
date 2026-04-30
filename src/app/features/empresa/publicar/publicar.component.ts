@@ -1,6 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import Swal from 'sweetalert2';
 import { RadarChartComponent } from '../../../shared/components/charts/radar-chart.component';
 import { BenchSliderComponent } from '../../../shared/components/bench/bench-slider.component';
 import { ChipComponent } from '../../../shared/components/chip/chip.component';
@@ -9,7 +11,7 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
 @Component({
   selector: 'app-empresa-publicar',
   standalone: true,
-  imports: [CommonModule, FormsModule, RadarChartComponent, BenchSliderComponent, ChipComponent, IconComponent],
+  imports: [CommonModule, FormsModule, RouterModule, RadarChartComponent, BenchSliderComponent, ChipComponent, IconComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="page-head">
@@ -19,8 +21,8 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
         <div class="desc">Define puesto, requisitos y el perfil idóneo (benchmark) para que el sistema calcule matches automáticos.</div>
       </div>
       <div style="display:flex;gap:8px;">
-        <button class="btn ghost">Guardar borrador</button>
-        <button class="btn primary"><app-icon name="check" [size]="13" /> Publicar</button>
+        <button class="btn ghost" routerLink="/empresa/dashboard">Cancelar</button>
+        <button class="btn primary" (click)="publicar()"><app-icon name="check" [size]="13" /> Publicar</button>
       </div>
     </div>
 
@@ -112,7 +114,19 @@ import { IconComponent } from '../../../shared/components/icon/icon.component';
   `]
 })
 export class EmpresaPublicarComponent {
+  router = inject(Router);
   readonly user = { name: 'Roberto Salazar', initials: 'RS' };
 
   readonly skills = ['Angular 17', 'PHP Flight', 'PostgreSQL', 'REST APIs', 'Git', 'Scrum'];
+
+  publicar(): void {
+    Swal.fire({
+      title: '¡Vacante Publicada!',
+      text: 'Tu nueva vacante se ha agregado a la bolsa laboral exitosamente.',
+      icon: 'success',
+      confirmButtonColor: '#0f6b34',
+    }).then(() => {
+      this.router.navigate(['/empresa/dashboard']);
+    });
+  }
 }
