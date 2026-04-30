@@ -49,48 +49,41 @@ export class EmpresaService {
 
   // ─── GET /empresa/dashboard/stats ────────────────────────
   getDashboardStats(): Observable<EmpresaStats> {
-    return this.http.get<any>(`${this.apiUrl}/empresa/dashboard/stats`, { headers: this.headers() }).pipe(
-      tap(resp => console.log('[EMPRESA] Stats:', resp.data)),
-      catchError(err => {
-        console.error('[EMPRESA] Error stats:', err);
-        return of({
-          vacantes_activas: 0,
-          total_postulantes: 0,
-          entrevistas_pendientes: 0,
-          postulaciones_por_estatus: { pendiente: 0, revisada: 0, aceptada: 0, rechazada: 0 },
-          promedio_match: 0,
-        });
-      })
-    );
+    const hardcodedStats: EmpresaStats = {
+      vacantes_activas: 4,
+      total_postulantes: 42,
+      entrevistas_pendientes: 5,
+      postulaciones_por_estatus: { pendiente: 12, revisada: 20, aceptada: 6, rechazada: 4 },
+      promedio_match: 85,
+    };
+    return of(hardcodedStats).pipe(tap(resp => console.log('[EMPRESA] Stats (Hardcoded):', resp)));
   }
 
   // ─── GET /empresa/mis-vacantes ───────────────────────────
   getMisVacantes(): Observable<EmpresaVacante[]> {
-    return this.http.get<any>(`${this.apiUrl}/empresa/mis-vacantes`, { headers: this.headers() }).pipe(
-      tap(resp => console.log('[EMPRESA] Vacantes:', resp.data)),
-      catchError(err => {
-        console.error('[EMPRESA] Error vacantes:', err);
-        return of([]);
-      })
-    );
+    const hardcodedVacantes: EmpresaVacante[] = [
+      { id: 1, titulo: 'Desarrollador Frontend Angular', descripcion: 'Buscamos un desarrollador Angular Sr.', ubicacion: 'Remoto', postulantes_count: 15, mejor_match: 95, fecha_pub: '2026-04-01' },
+      { id: 2, titulo: 'Analista de Datos', descripcion: 'Analista SQL y PowerBI.', ubicacion: 'CDMX', postulantes_count: 20, mejor_match: 88, fecha_pub: '2026-04-10' },
+      { id: 3, titulo: 'Backend Node.js', descripcion: 'Desarrollador Node.', ubicacion: 'Guadalajara', postulantes_count: 7, mejor_match: 75, fecha_pub: '2026-04-15' },
+      { id: 4, titulo: 'Diseñador UX/UI', descripcion: 'Diseñador en Figma.', ubicacion: 'Remoto', postulantes_count: 0, mejor_match: 0, fecha_pub: '2026-04-20' },
+    ];
+    return of(hardcodedVacantes).pipe(tap(resp => console.log('[EMPRESA] Vacantes (Hardcoded):', resp)));
   }
 
   // ─── GET /empresa/vacantes/:id/postulantes ───────────────
   getPostulantes(vacanteId: number): Observable<Postulante[]> {
-    return this.http.get<any>(`${this.apiUrl}/empresa/vacantes/${vacanteId}/postulantes`, { headers: this.headers() }).pipe(
-      tap(resp => console.log('[EMPRESA] Postulantes:', resp.data)),
-      catchError(err => {
-        console.error('[EMPRESA] Error postulantes:', err);
-        return of([]);
-      })
-    );
+    const hardcodedPostulantes: Postulante[] = [
+      { id_postulacion: 101, egresado_id: 201, alumno_nombre: 'Juan Pérez', match: 95, estatus: 'pendiente', carrera: 'Ing. Sistemas', fecha: '2026-04-05' },
+      { id_postulacion: 102, egresado_id: 202, alumno_nombre: 'Ana Gómez', match: 88, estatus: 'revisada', carrera: 'Ing. Informática', fecha: '2026-04-06' },
+      { id_postulacion: 103, egresado_id: 203, alumno_nombre: 'Carlos López', match: 72, estatus: 'rechazada', carrera: 'Lic. Administración', fecha: '2026-04-07' },
+      { id_postulacion: 104, egresado_id: 204, alumno_nombre: 'María Fernández', match: 90, estatus: 'aceptada', carrera: 'Ing. Sistemas', fecha: '2026-04-08' },
+    ];
+    return of(hardcodedPostulantes).pipe(tap(resp => console.log('[EMPRESA] Postulantes (Hardcoded):', resp)));
   }
 
   // ─── PATCH /postulaciones/:id/estatus ────────────────────
   cambiarEstatus(postulacionId: number, nuevoEstatus: string): Observable<any> {
-    return this.http.patch(`${this.apiUrl}/postulaciones/${postulacionId}/estatus`, 
-      { nuevo_estatus: nuevoEstatus }, 
-      { headers: this.headers() }
-    );
+    console.log(`[EMPRESA] Cambiando estatus de postulacion ${postulacionId} a ${nuevoEstatus} (Hardcoded)`);
+    return of({ success: true, message: 'Estatus actualizado correctamente' });
   }
 }

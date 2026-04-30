@@ -5,7 +5,12 @@
     <div class="desc">Visión general de tus procesos de selección activos</div>
   </div>
   <div style="display:flex;gap:8px;">
-    <button class="btn ghost" (click)="recargar()"><app-icon name="download" [size]="13" /> Recargar</button>
+    <button class="btn primary" routerLink="/empresa/publicar">
+      <app-icon name="plus" [size]="13" /> Nueva vacante
+    </button>
+    <button class="btn ghost" (click)="recargar()">
+      <app-icon name="download" [size]="13" /> Recargar
+    </button>
   </div>
 </div>
 

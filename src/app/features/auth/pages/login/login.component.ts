@@ -93,7 +93,14 @@ export class LoginComponent {
           if (res.body.user.primer_ingreso) {
             this.router.navigate(['/onboarding']);
           } else {
-            this.router.navigate(['/inicio']);
+            const role = res.body.user.rol;
+            if (role === 'empresa') {
+              this.router.navigate(['/empresa/dashboard']);
+            } else if (role === 'admin') {
+              this.router.navigate(['/admin/dashboard']);
+            } else {
+              this.router.navigate(['/inicio']);
+            }
           }
         } else {
           Swal.fire('Error', 'Credenciales incorrectas', 'error');
