@@ -1,0 +1,90 @@
+<div class="page-head">
+  <h1>Mi Perfil</h1>
+  <p class="sub">Gestiona tu información profesional y genera tu CV</p>
+</div>
+
+@if (loading()) {
+  <div class="loading-state">
+    <div class="placeholder" style="height: 160px; margin-bottom: 16px;"></div>
+    <div class="placeholder" style="height: 80px; margin-bottom: 16px;"></div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div class="placeholder" style="height: 200px;"></div>
+      <div class="placeholder" style="height: 200px;"></div>
+    </div>
+  </div>
+} @else if (error()) {
+  <div class="error-banner">
+    <app-icon [name]="'x'" [size]="18" />
+    <span>{{ error() }}</span>
+    <button class="btn sm primary" (click)="onRetry()">Reintentar</button>
+  </div>
+} @else if (perfil()) {
+  <div class="perfil-grid">
+    <!-- Full width: Header -->
+    <app-perfil-header
+      [perfil]="perfil()"
+      [completitud]="completitud()"
+      [photoUploading]="photoUploading()"
+      (fotoChange)="onFotoChange($event)"
+    />
+
+    <!-- Full width: Stats -->
+    <app-perfil-stats [stats]="stats()" />
+
+    <!-- Two columns: Contacto + Biografia -->
+    <div class="col">
+      <app-perfil-contacto
+        [contacto]="perfil()?.contacto ?? null"
+        [isEditing]="editContacto()"
+        [saving]="savingContacto()"
+        (edit)="onEditContacto()"
+        (cancel)="onCancelContacto()"
+        (save)="onSaveContacto($event)"
+      />
+    </div>
+    <div class="col">
+      <app-perfil-biografia
+        [biografia]="perfil()?.biografia_ia ?? null"
+        [isEditing]="editBiografia()"
+        [saving]="savingBiografia()"
+        [aiOptimizing]="aiOptimizing()"
+        [aiResult]="aiResult()"
+        [aiReviewOpen]="aiReviewOpen()"
+        (edit)="onEditBiografia()"
+        (cancel)="onCancelBiografia()"
+        (save)="onSaveBiografia($event)"
+        (optimize)="onOptimizeBiografia()"
+        (applyAi)="onApplyAiBiografia()"
+        (discardAi)="onDiscardAiBiografia()"
+      />
+    </div>
+
+    <!-- Full width: Trayectoria -->
+    <app-perfil-trayectoria
+      [trayectoria]="perfil()?.trayectoria ?? null"
+      [isEditing]="editTrayectoria()"
+      [saving]="savingTrayectoria()"
+      (edit)="onEditTrayectoria()"
+      (cancel)="onCancelTrayectoria()"
+      (save)="onSaveTrayectoria($event)"
+    />
+
+    <!-- Two columns: Habilidades + Recomendaciones -->
+    <app-perfil-habilidades
+      [habilidades]="perfil()?.habilidades ?? null"
+      [saving]="savingHabilidades()"
+      (change)="onChangeHabilidades($event)"
+    />
+    <app-perfil-recomendaciones
+      [recomendaciones]="recomendaciones()"
+      [loading]="loadingRecomendaciones()"
+    />
+
+    <!-- Full width: CV Preview -->
+    <app-perfil-cv-preview
+      [perfil]="perfil()"
+      [generating]="generatingPdf()"
+      (generatePdf)="onGeneratePdf()"
+    />
+  </div>
+}

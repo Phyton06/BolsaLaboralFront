@@ -1,0 +1,137 @@
+<div class="card">
+  <div class="card-h">
+    <app-icon [name]="'briefcase'" [size]="18" />
+    <h3>Trayectoria Laboral</h3>
+    <div class="spacer"></div>
+    @if (!isEditing()) {
+      <button class="btn ghost btn-sm" (click)="onEdit()">
+        <app-icon [name]="'settings'" [size]="14" />
+        Editar
+      </button>
+    }
+  </div>
+  <hr class="divider" />
+
+  @if (!isEditing()) {
+    <!-- View mode -->
+    @if (trayectoria()?.length) {
+      <div class="entries-list">
+        @for (entry of trayectoria(); track entry.empresa + entry.fecha) {
+          <div class="entry-item">
+            <div class="entry-header">
+              <app-chip [color]="tipoChip[entry.tipo]">{{ tipoLabels[entry.tipo] }}</app-chip>
+              <span class="entry-empresa">{{ entry.empresa }}</span>
+              <span class="entry-fecha">{{ entry.fecha }}</span>
+            </div>
+            @if (entry.descripcion) {
+              <p class="entry-desc">{{ entry.descripcion }}</p>
+            }
+          </div>
+        }
+      </div>
+    } @else {
+      <p class="empty-state">No has agregado experiencia laboral aún.</p>
+    }
+  } @else {
+    <!-- Edit mode -->
+    <div class="edit-mode">
+      <!-- Existing entries -->
+      @if (sortedEntries().length) {
+        <div class="entries-list">
+          @for (entry of sortedEntries(); track entry.empresa + entry.fecha; let i = $index) {
+            <div class="entry-item">
+              @if (editingIndex() === i) {
+                <!-- Inline edit -->
+                <div class="edit-entry-form">
+                  <div class="field">
+                    <label>Tipo</label>
+                    <select [(ngModel)]="localTrayectoria()[i].tipo">
+                      @for (t of tipos; track t) {
+                        <option [value]="t">{{ tipoLabels[t] }}</option>
+                      }
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label>Empresa</label>
+                    <input type="text" [(ngModel)]="localTrayectoria()[i].empresa" />
+                  </div>
+                  <div class="field">
+                    <label>Descripción</label>
+                    <textarea rows="2" [(ngModel)]="localTrayectoria()[i].descripcion"></textarea>
+                  </div>
+                  <div class="field">
+                    <label>Fecha (YYYY-MM)</label>
+                    <input type="text" placeholder="2024-06" [(ngModel)]="localTrayectoria()[i].fecha" />
+                  </div>
+                  <div class="actions">
+                    <button class="btn sm primary" (click)="saveEditEntry(i)">OK</button>
+                  </div>
+                </div>
+              } @else {
+                <div class="entry-header">
+                  <app-chip [color]="tipoChip[entry.tipo]">{{ tipoLabels[entry.tipo] }}</app-chip>
+                  <span class="entry-empresa">{{ entry.empresa }}</span>
+                  <span class="entry-fecha">{{ entry.fecha }}</span>
+                  <button class="btn ghost btn-sm" (click)="startEditEntry(i)">
+                    <app-icon [name]="'settings'" [size]="12" />
+                  </button>
+                  <button class="btn ghost btn-sm err" (click)="removeEntry(i)">
+                    <app-icon [name]="'x'" [size]="12" />
+                  </button>
+                </div>
+                @if (entry.descripcion) {
+                  <p class="entry-desc">{{ entry.descripcion }}</p>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Add new entry -->
+      @if (showAddForm()) {
+        <div class="add-form">
+          <h4>Nueva experiencia</h4>
+          <div class="field">
+            <label>Tipo</label>
+            <select [(ngModel)]="newTipo">
+              @for (t of tipos; track t) {
+                <option [value]="t">{{ tipoLabels[t] }}</option>
+              }
+            </select>
+          </div>
+          <div class="field">
+            <label>Empresa *</label>
+            <input type="text" placeholder="Nombre de la empresa" [(ngModel)]="newEmpresa" />
+          </div>
+          <div class="field">
+            <label>Descripción</label>
+            <textarea rows="2" placeholder="Qué hiciste..." [(ngModel)]="newDescripcion"></textarea>
+          </div>
+          <div class="field">
+            <label>Fecha (YYYY-MM) *</label>
+            <input type="text" placeholder="2024-06" [(ngModel)]="newFecha" />
+          </div>
+          <div class="actions">
+            <button class="btn sm primary" (click)="addEntry()" [disabled]="!newEmpresa() || !newFecha()">
+              Agregar
+            </button>
+            <button class="btn sm" (click)="resetNewForm()">Cancelar</button>
+          </div>
+        </div>
+      } @else {
+        <button class="btn ghost" (click)="showAddForm.set(true)">
+          <app-icon [name]="'plus'" [size]="14" />
+          Agregar experiencia
+        </button>
+      }
+
+      <div class="actions main-actions">
+        <button class="btn primary" (click)="onSave()" [disabled]="saving()">
+          @if (saving()) { Guardando... } @else { Guardar todo }
+        </button>
+        <button class="btn" (click)="onCancel()" [disabled]="saving()">Cancelar</button>
+      </div>
+    </div>
+  }
+</div>

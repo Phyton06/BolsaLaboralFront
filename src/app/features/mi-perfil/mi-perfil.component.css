@@ -1,0 +1,53 @@
+.page-head {
+  margin-bottom: 24px;
+}
+
+.page-head h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 4px;
+  color: var(--ink-900);
+}
+
+.page-head .sub {
+  font-size: 14px;
+  color: var(--ink-500);
+  margin: 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.error-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--err-100, #fef2f2);
+  border: 1px solid var(--err-600);
+  border-radius: var(--r-md);
+  color: var(--err-600);
+  font-size: 14px;
+}
+
+.error-banner .btn {
+  margin-left: auto;
+}
+
+.perfil-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Two-column layout */
+@media (min-width: 1024px) {
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+}

@@ -1,0 +1,65 @@
+<div class="page-head">
+  <div>
+    <div class="crumbs">EVALUACIONES · RESULTADOS</div>
+    <h1>Resultados: {{ meta().etiqueta }}</h1>
+  </div>
+</div>
+
+@if (loading()) {
+  <div class="loading-state">
+    <div class="placeholder" style="height: 200px;"></div>
+    <div class="placeholder" style="height: 300px;"></div>
+  </div>
+} @else {
+  <!-- Score Card -->
+  <div class="score-card">
+    <div class="score-circle">
+      <app-donut
+        [value]="puntaje()"
+        [max]="100"
+        [size]="160"
+        [color]="scoreColor()"
+        [label]="puntaje() + '%'"
+        [sublabel]="scoreLabel()"
+      />
+    </div>
+    <div class="score-info">
+      <h2>Evaluación {{ meta().etiqueta }} completada</h2>
+      <p class="score-insight">{{ insight() }}</p>
+    </div>
+  </div>
+
+  <!-- Radar -->
+  @if (radar()) {
+    <div class="card radar-card">
+      <div class="card-h">
+        <h3>Tu radar de competencias actualizado</h3>
+      </div>
+      <div class="radar-body">
+        <app-radar-chart
+          [size]="280"
+          [axes]="radarAxes()"
+          [datasets]="radarDatasets()"
+        />
+        <div class="radar-legend">
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--brand-700);"></div>
+            <span>Tu perfil</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-dot" style="background: var(--gold-600);"></div>
+            <span>Promedio carrera</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn primary" (click)="onVolver()">
+      <app-icon [name]="'arrowR'" [size]="14" style="transform: rotate(180deg);" />
+      Volver al catálogo
+    </button>
+  </div>
+}

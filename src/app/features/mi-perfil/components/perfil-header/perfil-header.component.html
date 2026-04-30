@@ -1,0 +1,67 @@
+<div class="card perfil-header">
+  <div class="header-content">
+    <!-- Avatar / Photo -->
+    <div class="avatar-wrapper">
+      @if (perfil()?.foto_url) {
+        <img [src]="perfil()!.foto_url!" [alt]="nombreCompleto()" class="avatar-img" />
+      } @else {
+        <div class="avatar-placeholder">
+          {{ iniciales() }}
+        </div>
+      }
+      @if (photoUploading()) {
+        <div class="avatar-overlay">
+          <app-icon [name]="'upload'" [size]="20" />
+        </div>
+      }
+    </div>
+
+    <!-- Info -->
+    <div class="info">
+      <h2 class="name">{{ nombreCompleto() || 'Egresado' }}</h2>
+      @if (perfil()?.carrera) {
+        <p class="career">{{ perfil()?.carrera }}</p>
+      }
+      @if (perfil()?.division) {
+        <p class="division">
+          <app-icon [name]="'edu'" [size]="14" />
+          {{ perfil()?.division }}
+        </p>
+      }
+      @if (perfil()?.periodo_egreso) {
+        <p class="period">
+          <app-icon [name]="'clock'" [size]="14" />
+          Egreso: {{ perfil()?.periodo_egreso }}
+        </p>
+      }
+    </div>
+
+    <!-- Completeness donut -->
+    <div class="completeness">
+      <app-donut
+        [value]="completitud()"
+        [max]="100"
+        [size]="80"
+        color="var(--brand-700)"
+        [label]="completitud() + '%'"
+        sublabel="completo"
+      />
+    </div>
+  </div>
+
+  <!-- Photo upload button -->
+  <div class="photo-action">
+    <label class="btn ghost btn-sm" for="foto-input">
+      <app-icon [name]="'upload'" [size]="14" />
+      Cambiar foto
+    </label>
+    <input
+      id="foto-input"
+      type="file"
+      accept="image/jpeg,image/png,image/webp"
+      (change)="onFileSelected($event)"
+      [disabled]="photoUploading()"
+      hidden
+    />
+  </div>
+</div>

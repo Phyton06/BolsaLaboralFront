@@ -69,7 +69,7 @@ export const routes: Routes = [
       {
         path: 'mis-postulaciones',
         canActivate: [authGuard],
-        data: { roles: ['candidato'] },
+        data: { roles: ['egresado'] },
         loadComponent: () =>
           import('./features/mis-postulaciones/pages/mis-postulaciones.component')
             .then(m => m.MisPostulacionesComponent)
@@ -77,8 +77,20 @@ export const routes: Routes = [
       {
         path: 'evaluaciones',
         loadComponent: () =>
-          import('./features/evaluaciones/evaluacion.component')
-            .then(m => m.EvaluacionComponent)
+          import('./features/evaluaciones/components/catalogo/evaluacion-catalogo.component')
+            .then(m => m.EvaluacionCatalogoComponent)
+      },
+      {
+        path: 'evaluaciones/examen',
+        loadComponent: () =>
+          import('./features/evaluaciones/components/examen/evaluacion-examen.component')
+            .then(m => m.EvaluacionExamenComponent)
+      },
+      {
+        path: 'evaluaciones/resultados',
+        loadComponent: () =>
+          import('./features/evaluaciones/components/resultados/evaluacion-resultados.component')
+            .then(m => m.EvaluacionResultadosComponent)
       },
       {
         path: 'mi-radar',

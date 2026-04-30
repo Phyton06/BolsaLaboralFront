@@ -1,0 +1,136 @@
+.card-h h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink-900);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.bio-content {
+  padding: 8px 0;
+}
+
+.bio-content p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-700);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.empty-state {
+  color: var(--ink-400) !important;
+  font-style: italic;
+}
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--r-sm);
+  font-family: 'IBM Plex Sans', sans-serif;
+  font-size: 14px;
+  color: var(--ink-900);
+  background: var(--paper);
+  resize: vertical;
+  line-height: 1.5;
+  transition: border-color 0.15s;
+}
+
+.field textarea:focus {
+  outline: none;
+  border-color: var(--brand-700);
+  box-shadow: 0 0 0 2px var(--brand-50);
+}
+
+.field label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-700);
+  margin-bottom: 4px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* AI Review */
+.ai-review {
+  margin: 12px 0;
+  padding: 16px;
+  background: var(--ink-50);
+  border-radius: var(--r-md);
+  border: 1px solid var(--brand-200, var(--ink-200));
+}
+
+.ai-review h4 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--brand-700);
+  margin: 0 0 12px;
+}
+
+.ai-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+
+.ai-col {
+  padding: 12px;
+  border-radius: var(--r-sm);
+  background: var(--paper);
+}
+
+.ai-col.original {
+  border: 1px solid var(--ink-200);
+}
+
+.ai-col.optimized {
+  border: 1px solid var(--brand-700);
+}
+
+.ai-label {
+  display: block;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--ink-500);
+}
+
+.ai-col p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-700);
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ai-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  color: var(--ink-500);
+  font-size: 13px;
+}

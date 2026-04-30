@@ -2,107 +2,171 @@ import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '../../shared/components/icon/icon.component';
-import { ChipComponent } from '../../shared/components/chip/chip.component';
 import { VacantesService, VacanteDisplay } from './services/vacantes.service';
+import { VacantesApiService } from './services/vacantes-api.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-ofertas-list',
   standalone: true,
-  imports: [CommonModule, FormsModule, IconComponent, ChipComponent],
+  imports: [CommonModule, FormsModule, IconComponent],
   templateUrl: './ofertas-list.component.html',
   styleUrl: './ofertas-list.component.css'
 })
 export class OfertasListComponent implements OnInit {
-  
-  // Injección del servicio de vacantes
+
   vacantesService = inject(VacantesService);
-  
-  // Alias para usar en el template
+  vacantesApi = inject(VacantesApiService);
+
   jobsList = this.vacantesService.vacantes;
   cargando = this.vacantesService.cargando;
   error = this.vacantesService.error;
 
-  // Mapping de propiedades para el template
-  getJobList(): VacanteDisplay[] {
-    return this.jobsList();
-  }
+  // Opciones de filtros (del backend)
+  ubicaciones = this.vacantesService.ubicaciones;
 
-  locations = signal<string[]>(['Tepic', 'Bahía de Banderas', 'Compostela', 'Nayarit (todo)', 'Nacional', 'Remoto']);
-  selectedLocations = signal<string[]>([]);
-
-  areas = signal<string[]>(['Tecnologías de la Información', 'Ing. de Procesos', 'Administración', 'Mantenimiento Industrial', 'Turismo', 'Mecatrónica']);
-  selectedAreas = signal<string[]>([]);
-
-  minMatch = signal<number>(70);
-
-  sources = signal<{label:string, checked:boolean, source:'Convenio UT' | 'DENUE' | 'Externo'}[]>([
-    { label:'Convenio UT', checked:true, source:'Convenio UT' },
-    { label:'Externas', checked:true, source:'DENUE' },
-  ]);
+  // Filtros locales
+  selectedUbicacion = signal<string>('Sin preferencia');
+  selectedSource = signal<'Convenio UT' | 'Externas' | 'both'>('both');
+  minMatch = signal<number>(0);
 
   viewMode = signal<'grid' | 'list'>('grid');
 
-  // Inicializar
   ngOnInit(): void {
+    this.vacantesService.cargarFiltrosYPerfil();
     this.vacantesService.cargarVacantes();
   }
 
+  // Filtra los datos CARGADOS del backend (filtro client-side)
   filteredJobs = computed(() => {
-    // Los filtros ya se aplican en el servicio
-    return this.jobsList();
+    let jobs = this.jobsList();
+    const ub = this.selectedUbicacion();
+    const src = this.selectedSource();
+    const mm = this.minMatch();
+
+    // Filtrar por ubicación geográfica (solo si no es "Sin preferencia")
+    if (ub !== 'Sin preferencia') {
+      jobs = jobs.filter(j => {
+        const loc = (j.loc || j.ubicacion || '').toLowerCase();
+        return loc.includes(ub.toLowerCase());
+      });
+    }
+
+    // Filtrar por fuente
+    if (src === 'Convenio UT') {
+      jobs = jobs.filter(j => j.src === 'Convenio UT');
+    } else if (src === 'Externas') {
+      jobs = jobs.filter(j => j.src !== 'Convenio UT');
+    }
+
+    // Filtrar por match mínimo
+    if (mm > 0) {
+      jobs = jobs.filter(j => j.match >= mm);
+    }
+
+    return jobs.sort((a, b) => b.match - a.match);
   });
 
-  getCompanyInitials(empresa: string | undefined): string {
-    if (!empresa) return '??';
-    return empresa.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+  onUbicacionChange(ubicacion: string): void {
+    this.selectedUbicacion.set(ubicacion);
+    // Recargar Jooble con la nueva ubicación
+    const location = ubicacion === 'Sin preferencia' ? 'Mexico' : ubicacion;
+    this.vacantesService.cargarVacantes(location);
   }
 
-  getMatchColor(match: number): string {
-    if (match >= 85) return 'var(--ok-600)';
-    if (match >= 75) return 'var(--brand-600)';
-    return 'var(--gold-600)';
+  onSourceChange(source: 'Convenio UT' | 'Externas' | 'both'): void {
+    this.selectedSource.set(source);
   }
-
-  toggleLocation(loc: string): void {
-    this.selectedLocations.update(list =>
-      list.includes(loc) ? list.filter(l => l !== loc) : [...list, loc]
-    );
-  }
-
-  toggleArea(area: string): void {
-    this.selectedAreas.update(list =>
-      list.includes(area) ? list.filter(a => a !== area) : [...list, area]
-    );
-  }
-
-  toggleSource(index: number): void {
-    this.sources.update(sources => {
-      const newSources = sources.map((s, i) => 
-        i === index ? { ...s, checked: !s.checked } : s
-      );
-      // Actualizar filtros en el servicio
-      this.vacantesService.aplicarFiltros({
-        incluirConvenio: newSources[0].checked,
-        incluirDenue: newSources[1].checked
-      });
-      return newSources;
-    });
-  }
-
-  readonly user = { name: 'Juan Pérez', initials: 'JP' };
 
   clearFilters(): void {
-    this.selectedLocations.set([]);
-    this.selectedAreas.set([]);
-    this.minMatch.set(70);
-    this.sources.set([
-      { label:'Convenio UT', checked:true, source:'Convenio UT' },
-      { label:'Externas', checked:true, source:'DENUE' },
-    ]);
-    this.vacantesService.limpiarFiltros();
+    this.selectedUbicacion.set('Sin preferencia');
+    this.selectedSource.set('both');
+    this.minMatch.set(0);
   }
 
   recargar(): void {
     this.vacantesService.cargarVacantes();
+  }
+
+  postularse(job: VacanteDisplay): void {
+    // Ya postulado → no hacer nada
+    if (job.yaPostulado) return;
+
+    // Vacante externa (Jooble) → abrir URL en nueva pestaña
+    if (job.src !== 'Convenio UT') {
+      const url = job.url_externa || job.url || '';
+      if (!url) {
+        Swal.fire({
+          title: 'Sin URL disponible',
+          text: 'Esta vacante no tiene un enlace externo disponible.',
+          icon: 'warning',
+          confirmButtonColor: '#0f6b34',
+        });
+        return;
+      }
+
+      Swal.fire({
+        title: 'Postularse',
+        html: `Serás redirigido al sitio de <b>${job.company}</b> para completar tu postulación.`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Continuar',
+        cancelButtonText: 'Cancelar',
+        confirmButtonColor: '#0f6b34',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      });
+      return;
+    }
+
+    // Vacante de Convenio UT → postular en la DB
+    Swal.fire({
+      title: '¿Estás seguro?',
+      html: `Quieres postularte a <b>${job.title}</b> en <b>${job.company}</b>.`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, postularme',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#0f6b34',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.vacantesApi.postular(job.id).subscribe({
+          next: () => {
+            Swal.fire({
+              title: '¡Postulación enviada!',
+              text: 'Te has postulado correctamente a esta vacante.',
+              icon: 'success',
+              confirmButtonColor: '#0f6b34',
+            });
+          },
+          error: (err) => {
+            console.error('Error al postular:', err);
+            let msg = 'Ocurrió un error al postular.';
+
+            // Detectar errores específicos
+            if (err?.status === 401) {
+              msg = 'Debes iniciar sesión para postularte.';
+            } else if (err?.status === 403) {
+              msg = 'Solo los egresados pueden postularse a vacantes de Convenio UT.';
+            } else if (err?.error?.error) {
+              msg = err.error.error;
+            } else if (err?.error?.message) {
+              msg = err.error.message;
+            } else if (err?.error?.data?.message) {
+              msg = err.error.data.message;
+            }
+
+            Swal.fire({
+              title: 'Error',
+              text: msg,
+              icon: 'error',
+              confirmButtonColor: '#0f6b34',
+            });
+          }
+        });
+      }
+    });
   }
 }

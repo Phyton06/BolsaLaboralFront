@@ -1,0 +1,90 @@
+<div class="card">
+  <div class="card-h">
+    <app-icon [name]="'mail'" [size]="18" />
+    <h3>Contacto</h3>
+    <div class="spacer"></div>
+    @if (!isEditing()) {
+      <button class="btn ghost btn-sm" (click)="onEdit()">
+        <app-icon [name]="'settings'" [size]="14" />
+        Editar
+      </button>
+    }
+  </div>
+  <hr class="divider" />
+
+  @if (!isEditing()) {
+    <!-- View mode -->
+    <div class="contacto-grid">
+      <div class="contacto-item">
+        <span class="label">Teléfono</span>
+        <span class="value">{{ contacto()?.telefono || '—' }}</span>
+      </div>
+      <div class="contacto-item">
+        <span class="label">Correo personal</span>
+        <span class="value">{{ contacto()?.correo_personal || '—' }}</span>
+      </div>
+      <div class="contacto-item">
+        <span class="label">LinkedIn</span>
+        @if (contacto()?.linkedin) {
+          <a [href]="contacto()!.linkedin!" target="_blank" rel="noopener" class="value link">
+            {{ contacto()!.linkedin }}
+          </a>
+        } @else {
+          <span class="value">—</span>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- Edit mode -->
+    <div class="edit-form">
+      <div class="field">
+        <label for="edit-telefono">Teléfono</label>
+        <input
+          id="edit-telefono"
+          type="tel"
+          placeholder="755-123-4567"
+          [(ngModel)]="telefono"
+          [class.error]="fieldError('telefono')"
+        />
+        @if (fieldError('telefono')) {
+          <span class="error-msg">{{ fieldError('telefono') }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="edit-correo">Correo personal</label>
+        <input
+          id="edit-correo"
+          type="email"
+          placeholder="usuario@email.com"
+          [(ngModel)]="correoPersonal"
+          [class.error]="fieldError('correo')"
+        />
+        @if (fieldError('correo')) {
+          <span class="error-msg">{{ fieldError('correo') }}</span>
+        }
+      </div>
+
+      <div class="field">
+        <label for="edit-linkedin">LinkedIn</label>
+        <input
+          id="edit-linkedin"
+          type="url"
+          placeholder="https://linkedin.com/in/usuario"
+          [(ngModel)]="linkedin"
+          [class.error]="fieldError('linkedin')"
+        />
+        @if (fieldError('linkedin')) {
+          <span class="error-msg">{{ fieldError('linkedin') }}</span>
+        }
+      </div>
+
+      <div class="actions">
+        <button class="btn primary" (click)="onSave()" [disabled]="saving() || !hasChanges()">
+          @if (saving()) { Guardando... } @else { Guardar }
+        </button>
+        <button class="btn" (click)="onCancel()" [disabled]="saving()">Cancelar</button>
+      </div>
+    </div>
+  }
+</div>

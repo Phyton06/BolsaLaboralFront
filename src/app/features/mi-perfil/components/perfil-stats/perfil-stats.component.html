@@ -1,0 +1,24 @@
+@if (stats()) {
+  <div class="stats-grid">
+    <app-conv-stat
+      l="Postulaciones activas"
+      [v]="stats()!.postulaciones_activas"
+      c="var(--brand-700)"
+    />
+    <app-conv-stat
+      l="Match promedio"
+      [v]="stats()!.match_promedio + '%'"
+      c="var(--ok-600)"
+    />
+    <app-conv-stat
+      l="Pruebas completadas"
+      [v]="stats()!.pruebas_completadas"
+      c="var(--gold-600)"
+    />
+    <app-conv-stat
+      l="Vistas del perfil"
+      [v]="stats()!.vistas_perfil"
+      c="var(--viz-3)"
+    />
+  </div>
+}

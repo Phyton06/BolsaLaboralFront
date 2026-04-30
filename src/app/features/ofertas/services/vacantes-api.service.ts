@@ -12,6 +12,7 @@ export interface Vacante {
   titulo: string;
   descripcion?: string;
   ubicacion: string;
+  modalidad?: string;
   division_destino?: string | null;
   perfil_idoneo?: any;
   analisis_gemini?: any;
@@ -71,8 +72,9 @@ export class VacantesApiService {
     if (params?.ubicacion) queryParams.append('ubicacion', params.ubicacion);
     if (params?.division_id) queryParams.append('division_id', params.division_id.toString());
     if (params?.solo_convenio) queryParams.append('solo_convenio', 'true');
-    if (params?.page) queryParams.append('page', params.page.toString());
-    if (params?.limit) queryParams.append('limit', params.limit.toString());
+    // Always request at least 20
+    queryParams.append('page', (params?.page || 1).toString());
+    queryParams.append('limit', (params?.limit || 50).toString());
 
     const url = `${this.apiUrl}/vacantes${queryParams.toString() ? '?' + queryParams.toString() : ''}`;
 
@@ -133,6 +135,38 @@ export class VacantesApiService {
     );
   }
 
+  // ─── GET /vacantes/filtros ────────────────────────────
+  // Obtiene opciones para filtros
+  getFiltros(): Observable<{ubicaciones: string[], modalidades: string[]}> {
+    return this.http.get<ApiEnvelope<{ubicaciones: string[], modalidades: string[]}>>(`${this.apiUrl}/vacantes/filtros`).pipe(
+      map(envelope => envelope.data),
+      catchError(err => {
+        console.error('Error fetching filtros:', err);
+        return of({
+          ubicaciones: [
+            'Nayarit', 'Aguascalientes', 'Baja California', 'Baja California Sur',
+            'Campeche', 'Chiapas', 'Chihuahua', 'Ciudad de México', 'Coahuila',
+            'Colima', 'Durango', 'Guanajuato', 'Guerrero', 'Hidalgo', 'Jalisco',
+            'México', 'Michoacán', 'Morelos', 'Nuevo León', 'Oaxaca', 'Puebla',
+            'Querétaro', 'Quintana Roo', 'San Luis Potosí', 'Sinaloa', 'Sonora',
+            'Tabasco', 'Tamaulipas', 'Tlaxcala', 'Veracruz', 'Yucatán', 'Zacatecas',
+            'Remoto', 'Sin preferencia'
+          ],
+          modalidades: ['Presencial', 'Remoto', 'Sin preferencia']
+        });
+      })
+    );
+  }
+
+  // ─── POST /vacantes/:id/postular ───────────────────────
+  // Aplicar a una vacante (egresado autenticado)
+  postular(vacanteId: number): Observable<any> {
+    return this.http.post<ApiEnvelope<any>>(
+      `${this.apiUrl}/vacantes/${vacanteId}/postular`, 
+      {}
+    );
+  }
+
   // ─── HELPERS ───────────────────────────────────────────
 
   private mapVacante(v: any): Vacante {
@@ -142,6 +176,7 @@ export class VacantesApiService {
       titulo: v.titulo,
       descripcion: v.descripcion || '',
       ubicacion: v.ubicacion,
+      modalidad: v.modalidad || 'Presencial',
       es_externa: v.es_externa || false,
       url_externa: v.url_externa || v.url || null,
       fecha_publicacion: v.fecha_publicacion,
