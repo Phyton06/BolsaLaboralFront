@@ -1,72 +1,142 @@
-# BolsaLaboralFront
+# BolsaLaboral Frontend
 
-> **Proyecto desarrollado para el Hackathon DITI 2026 — Universidad Tecnológica de la Costa**
+> Angular 17 SPA for the university job board — connects graduates with employers through AI-powered matching.
 
-Frontend del sistema de **Bolsa de Trabajo** de la Universidad Tecnológica de la Costa. Permite a candidatos buscar y postularse a ofertas de empleo, y a empresas publicar vacantes y gestionar postulaciones.
+<details>
+<summary>Version en español</summary>
 
-## 🚀 Cómo iniciar
+## BolsaLaboral Frontend
+
+> SPA Angular 17 para la bolsa de trabajo universitaria — conecta egresados con empresas mediante match impulsado por IA.
+
+### Características principales
+
+- **Dashboard personalizado** por rol (egresado, empresa, administrador)
+- **Ofertas laborales** con filtros por carrera, ubicación y tipo
+- **Match IA** que evalúa habilidades, experiencia e inglés contra el perfil idóneo
+- **Evaluaciones técnicas** con banco de preguntas y generación por IA
+- **Radar de empleabilidad** con radar chart y recomendaciones personalizadas
+- **CV Builder** con exportación a PDF
+- **Chat asesor** para orientación profesional
+- **Mensajería** entre egresados y empresas
+- **Panel admin** con dashboard, inserción masiva y gestión de convenios
+
+### Stack
+
+- Angular 17 (standalone components, lazy loading)
+- TypeScript 5.4
+- Tailwind CSS
+- Angular Material
+- RxJS
+- Chart.js / ng2-charts
+
+### Requisitos
+
+- Node.js >= 18
+- npm >= 9
+
+### Instalación
 
 ```bash
-# Instalar dependencias
+npm install
+```
+
+### Desarrollo
+
+```bash
+ng serve --port 4201
+```
+
+### Build
+
+```bash
+ng build --configuration production
+```
+
+</details>
+
+## Features
+
+- **Role-based dashboard** — egresado, empresa, and admin get tailored views
+- **Job listings** with filters by career, location, and type
+- **AI job matching** — evaluates skills, experience, and English level against an ideal profile
+- **Technical assessments** with question bank and AI-generated questions
+- **Employability radar** — radar chart with personalized recommendations
+- **CV Builder** with PDF export
+- **Advisor chat** for professional guidance
+- **Messaging** between graduates and companies
+- **Admin panel** — dashboard, bulk data insertion, and agreement management
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Angular 17 (standalone, lazy loading) |
+| Language | TypeScript 5.4 |
+| Styling | Tailwind CSS |
+| UI | Angular Material |
+| Reactive | RxJS |
+| Charts | Chart.js / ng2-charts |
+
+## Prerequisites
+
+- Node.js >= 18
+- npm >= 9
+
+## Getting Started
+
+```bash
+# Install dependencies
 npm install
 
-# Servidor de desarrollo
-ng serve
+# Start dev server
+ng serve --port 4201
+
+# Open http://localhost:4201
 ```
 
-Navega a `http://localhost:4200/`. La aplicación se recargará automáticamente.
-
-## 🏗️ Arquitectura
-
-Todo el código reside bajo `src/app/` y se divide en tres bloques:
-
-- **`core/`**: Servicios Singleton (AuthService, interceptors HTTP, guards, layout). Sin UI components aquí.
-- **`shared/`**: Componentes UI reutilizables (botones, modales, etc.). Agnósticos a la lógica de negocio.
-- **`features/`**: Lógica de negocio por módulo. Cada feature es independiente con lazy loading.
-
-### Features
-
-| Feature | Rutas | Rol |
-|---------|-------|-----|
-| `auth/` | `/login`, `/register`, `/forgot-password`, `/reset-password` | Público |
-| `inicio/` | `/inicio` | Todos (auth) |
-| `ofertas/` | `/ofertas`, `/ofertas/:id` | Todos (auth) |
-| `mis-postulaciones/` | `/mis-postulaciones` | Candidato |
-| `mi-perfil/` | `/mi-perfil` | Todos (auth) |
-
-## 🛠️ Stack
-
-| Tecnología | Versión |
-|------------|---------|
-| Angular | 17.3 |
-| TypeScript | 5.4 |
-| Tailwind CSS | 3.4 |
-| SweetAlert2 | 11 |
-| JWT Decode | 4 |
-| Angular CDK | 17.3 |
-
-## 🔧 Comandos
+## Build
 
 ```bash
-ng serve                    # Desarrollo
-ng build --configuration production  # Producción
-ng test                     # Testing
+ng build --configuration production
+# Output: dist/bolsa-laboral-front/
 ```
 
-## 📐 Convenciones
+## Project Structure
 
-- **Standalone components** siempre
-- **Lazy loading** con `loadComponent` en todas las rutas
-- **Signals** over RxJS para estado de componente
-- **OnPush** change detection
-- `@if` / `@for` sobre `*ngIf` / `*ngFor`
+```
+src/
+├── app/
+│   ├── core/           # Layout, interceptors, guards
+│   ├── features/       # Feature modules (lazy-loaded)
+│   │   ├── auth/       # Login, password reset, onboarding
+│   │   ├── admin/      # Admin dashboard & data insertion
+│   │   ├── empresa/    # Company dashboard, publish jobs, candidates
+│   │   ├── ofertas/    # Job listings & detail
+│   │   ├── mis-postulaciones/  # My applications
+│   │   ├── evaluaciones/       # Assessments & results
+│   │   ├── mi-perfil/  # Profile management
+│   │   ├── reporte/    # Employability radar
+│   │   ├── mensajes/   # Messaging
+│   │   ├── guia/       # User guide
+│   │   └── config/     # Settings
+│   └── shared/         # Shared components, pipes, directives
+├── assets/
+└── environments/
+```
 
-Ver `AGENTS.md` y `docs/` para más detalles.
+## Test Credentials
 
-## 🔗 Backend
+| Role | Matrícula | Password |
+|------|-----------|----------|
+| Egresado | `20240001` | `test1234` |
+| Empresa | `EMP001` | `test1234` |
+| Admin | `ADMIN01` | `test1234` |
 
-Este frontend consume la API de [BolsaLaboralBack](https://github.com/Phyton06/BolsaLaboralBack).
+## Related Repos
 
----
+- [BolsaLaboralBack](https://github.com/phyton06/BolsaLaboralBack) — REST API (PHP + Flight + PostgreSQL)
 
-Desarrollado para el **Hackathon DITI 2026** — **Universidad Tecnológica de la Costa**.
+## License
+
+Academic project — Universidad Tecnológica de la Costa
