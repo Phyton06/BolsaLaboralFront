@@ -1,5 +1,8 @@
 # BolsaLaboral Frontend
 
+[![CI](https://github.com/Phyton06/BolsaLaboralFront/actions/workflows/deploy.yml/badge.svg)](https://github.com/Phyton06/BolsaLaboralFront/actions/workflows/deploy.yml)
+[![Tests](https://img.shields.io/badge/tests-28%20passed-brightgreen)](https://github.com/Phyton06/BolsaLaboralFront/actions/workflows/deploy.yml)
+
 > Angular 17 SPA for the university job board — connects graduates with employers through AI-powered matching.
 
 **Development:** AI-assisted development was used for implementation acceleration; architecture, database design, feature decisions, integration and validation were performed by the team.
