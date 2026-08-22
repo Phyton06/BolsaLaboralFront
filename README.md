@@ -102,6 +102,10 @@ ng build --configuration production
 # Output: dist/bolsa-laboral-front/
 ```
 
+## Testing
+
+No automated tests yet. Manual testing via test credentials and the live demo. Planned: Jest + Angular Testing Utilities.
+
 ## Project Structure
 
 ```
