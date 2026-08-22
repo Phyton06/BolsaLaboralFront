@@ -5,7 +5,7 @@ import { DashboardService, BackendVacante, BackendEvaluacion } from './dashboard
 describe('DashboardService', () => {
   let service: DashboardService;
   let httpMock: HttpTestingController;
-  const apiUrl = 'http://localhost:3000/api';
+  const apiUrl = 'http://localhost:8080';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
