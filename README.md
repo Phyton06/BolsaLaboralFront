@@ -157,3 +157,21 @@ src/
 ## License
 
 Academic project — Universidad Tecnológica de la Costa
+
+## Architecture
+
+```
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│   Browser   │────▶│   Angular   │────▶│  Backend    │
+│   (SPA)     │     │   Router    │     │  (PHP API)  │
+└─────────────┘     └─────────────┘     └─────────────┘
+                           │
+                    ┌──────┴──────┐
+                    │   Features  │
+                    │  (lazy)     │
+                    └─────────────┘
+```
+
+- **Core** — Layout, HTTP interceptors, auth guards
+- **Features** — Lazy-loaded modules (auth, admin, company, jobs, applications, assessments, profile, reports, messaging)
+- **Shared** — Reusable components, pipes, directives
