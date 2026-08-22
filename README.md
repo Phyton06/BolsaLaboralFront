@@ -2,12 +2,16 @@
 
 > Angular 17 SPA for the university job board — connects graduates with employers through AI-powered matching.
 
+**Development:** AI-assisted development was used for implementation acceleration; architecture, database design, feature decisions, integration and validation were performed by the team.
+
 <details>
 <summary>Version en español</summary>
 
 ## BolsaLaboral Frontend
 
 > SPA Angular 17 para la bolsa de trabajo universitaria — conecta egresados con empresas mediante match impulsado por IA.
+
+**Desarrollo:** Se utilizó desarrollo asistido por IA para acelerar la implementación; la arquitectura, diseño de base de datos, decisiones de funcionalidad, integración y validación fueron realizadas por el equipo.
 
 ### Características principales
 
