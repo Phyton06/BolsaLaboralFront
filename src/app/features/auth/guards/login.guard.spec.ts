@@ -24,7 +24,7 @@ describe('loginGuard', () => {
   const runGuard = () => {
     const route = {} as any;
     const state = { root: {} } as any;
-    return loginGuard(route, state);
+    return TestBed.runInInjectionContext(() => loginGuard(route, state));
   };
 
   it('should allow access when not authenticated', () => {

@@ -5,7 +5,6 @@ import { AuthService } from '../../../core/services/auth/auth.service';
 
 describe('authGuard (inicio)', () => {
   let router: Router;
-  let authService: AuthService;
 
   beforeEach(() => {
     localStorage.clear();
@@ -16,7 +15,6 @@ describe('authGuard (inicio)', () => {
       ]
     });
     router = TestBed.inject(Router);
-    authService = TestBed.inject(AuthService);
   });
 
   afterEach(() => localStorage.clear());
@@ -24,7 +22,7 @@ describe('authGuard (inicio)', () => {
   const runGuard = (routeData: any = {}) => {
     const route = { data: routeData } as any;
     const state = { root: {} } as any;
-    return authGuard(route, state);
+    return TestBed.runInInjectionContext(() => authGuard(route, state));
   };
 
   const setAuthenticated = () => {
