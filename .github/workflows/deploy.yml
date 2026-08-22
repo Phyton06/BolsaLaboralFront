@@ -25,6 +25,7 @@ jobs:
           cache: npm
 
       - run: npm ci
+      - run: npx ng test --watch=false --browsers=ChromeHeadless
       - run: npx ng build --configuration production --base-href /BolsaLaboralFront/
       - run: cp dist/bolsa-laboral-front/browser/index.html dist/bolsa-laboral-front/browser/404.html
 

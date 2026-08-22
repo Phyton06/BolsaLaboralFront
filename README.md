@@ -108,7 +108,19 @@ ng build --configuration production
 
 ## Testing
 
-No automated tests yet. Manual testing via test credentials and the live demo. Planned: Jest + Angular Testing Utilities.
+```bash
+ng test --watch=false --browsers=ChromeHeadless   # unit tests
+```
+
+| Suite | Tests | What it covers |
+|-------|-------|----------------|
+| AuthService | 10 | JWT decode, session, roles, logout |
+| authInterceptor | 2 | Bearer token injection |
+| loginGuard | 3 | Redirect when authenticated |
+| authGuard (inicio) | 3 | Redirect when unauthenticated, role check |
+| DashboardService | 5 | Radar normalization, eval filtering, sorting |
+
+**CI:** GitHub Actions runs tests on every push and PR before deploy.
 
 ## Engineering Metrics
 
