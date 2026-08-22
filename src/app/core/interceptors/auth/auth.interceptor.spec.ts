@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HTTP_INTERCEPTORS, HttpClient } from '@angular/common/http';
-import { authInterceptor } from './auth.interceptor';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AuthService } from '../../services/auth/auth.service';
+import { authInterceptor } from './auth.interceptor';
 
 describe('authInterceptor', () => {
   let httpMock: HttpTestingController;
@@ -12,10 +12,10 @@ describe('authInterceptor', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
       providers: [
         AuthService,
-        { provide: HTTP_INTERCEPTORS, useValue: authInterceptor, multi: true }
+        provideHttpClient(withInterceptors([authInterceptor])),
+        provideHttpClientTesting(),
       ]
     });
     httpMock = TestBed.inject(HttpTestingController);
@@ -28,13 +28,13 @@ describe('authInterceptor', () => {
     httpMock.verify();
   });
 
-  it('should add Authorization header when token exists', () => {
-    authService.setSession('test-token-123', { id: 1 } as any);
+  it('should add Bearer header when token exists', () => {
+    authService.setSession('my-token', { id: 1 } as any);
 
     httpClient.get('/api/test').subscribe();
 
     const req = httpMock.expectOne('/api/test');
-    expect(req.request.headers.get('Authorization')).toBe('Bearer test-token-123');
+    expect(req.request.headers.get('Authorization')).toBe('Bearer my-token');
     req.flush({});
   });
 
