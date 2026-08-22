@@ -106,6 +106,15 @@ ng build --configuration production
 
 No automated tests yet. Manual testing via test credentials and the live demo. Planned: Jest + Angular Testing Utilities.
 
+## Engineering Metrics
+
+| Metric | Value |
+|--------|-------|
+| Build output | 1.9MB (48 chunks) |
+| Main bundle | 464KB |
+| Total JS | 1.5MB |
+| Deployment | GitHub Pages, auto-deploy from main |
+
 ## Project Structure
 
 ```
