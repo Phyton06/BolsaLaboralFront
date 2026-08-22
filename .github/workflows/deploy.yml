@@ -26,6 +26,7 @@ jobs:
 
       - run: npm ci
       - run: npx ng build --configuration production --base-href /BolsaLaboralFront/
+      - run: cp dist/bolsa-laboral-front/browser/index.html dist/bolsa-laboral-front/browser/404.html
 
       - uses: actions/upload-pages-artifact@v3
         with:
